@@ -67,10 +67,20 @@ void ImageWidget::only_show_image(bool flag)
     is_only_show_image = flag;
 }
 
+void ImageWidget::set_enable_drag_image(bool flag)
+{
+    is_enable_drag_image = flag;
+}
+
+void ImageWidget::set_enable_zoom_image(bool flag)
+{
+    is_enable_zoom_image = flag;
+}
+
 
 void ImageWidget::wheelEvent(QWheelEvent *e)
 {
-    if(is_image_load && !is_select_mode && !is_only_show_image)
+    if(is_image_load && !is_select_mode && !is_only_show_image && is_enable_zoom_image)
     {
         int numDegrees = e->delta();
         if(numDegrees > 0)
@@ -104,8 +114,20 @@ void ImageWidget::mousePressEvent(QMouseEvent *e)
         }
         //        qDebug() << mouse;
         //初次按键事件鼠标坐标
-        mousePosX = e->x();
-        mousePosY = e->y();
+        if(click_count == 0)
+        {
+            mousePosX = e->x();
+            mousePosY = e->y();
+            emit send_x1_y1(QString::number(e->x())+","+QString::number(e->y()));
+            click_count++;
+        }
+        else if(click_count == 1)
+        {
+            emit send_x2_y2(QString::number(e->x())+","+QString::number(e->y()));
+            distance = sqrt(double(pow(e->x()-mousePosX,2)) + double(pow(e->y()-mousePosY,2)));
+            click_count = 0;
+            emit send_distance(distance);
+        }
     }
 }
 
@@ -135,9 +157,12 @@ void ImageWidget::mouseMoveEvent(QMouseEvent *e)
 
 void ImageWidget::translate(int x,int y)
 {
-    xtranslate = last_x_pos + x;
-    ytranslate = last_y_pos + y;
-    update();
+    if(is_enable_drag_image)
+    {
+        xtranslate = last_x_pos + x;
+        ytranslate = last_y_pos + y;
+        update();
+    }
 }
 
 void ImageWidget::paintEvent(QPaintEvent *e)

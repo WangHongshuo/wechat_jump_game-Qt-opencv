@@ -25,9 +25,15 @@ public:
     void set_image_with_pointer(QImage* img , bool fit_widget = true, bool always_initialization = false);
     void clear();
     void only_show_image(bool flag = false);
+    void set_enable_drag_image(bool flag = true);
+    void set_enable_zoom_image(bool flag = true);
+    double distance = 0.0;
 
 signals:
     void parent_widget_size_changed(int width, int height);
+    void send_distance(double distance);
+    void send_x1_y1(QString data);
+    void send_x2_y2(QString data);
 
 public slots:
 
@@ -67,6 +73,8 @@ private:
     bool is_only_show_image = false;
     bool is_image_cloned = false;
     bool is_fit_widget_size = true;
+    bool is_enable_drag_image = true;
+    bool is_enable_zoom_image = true;
 
 	MouseDown mouse;
 	
@@ -75,5 +83,6 @@ private:
     QAction* mActionSelect;
 
 	QMenu* mMenu;
+    int click_count = 0;
 
 };
