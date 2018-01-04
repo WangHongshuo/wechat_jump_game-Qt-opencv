@@ -10,6 +10,13 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 ## Screenshot: ##
 ![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme.png)
 ## Change Log: ##
+
+- 2018.1.4:        
+   
+Prepare to rebuild. The way to get HWND is too stupid.     
+
+准备推倒重做，获取目标窗口的方式太煞笔。     
+
 - 2018.1.3:      
 
 Finished basic function.(Just add distance measurement function in ImageWidget class)
