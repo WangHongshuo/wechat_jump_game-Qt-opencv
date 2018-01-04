@@ -19,9 +19,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_findTargetWindowPushButton_clicked();
-
-    void on_getTargetHWNDPushButton_clicked();
+    void getMouseCursorPositionHWND();
 
     void on_isLockCheckBox_stateChanged(int arg1);
 
@@ -35,14 +33,19 @@ private slots:
     void receivedX1Y1(QString receiveData);
     void receivedX2Y2(QString receiveData);
     void on_jumpPushButton_clicked();
-
+    void receiveSelectedRectInfo(QByteArray in);
     void on_autoGetImageCheckBox_stateChanged(int arg1);
+
+    void on_findTargetWindowPushButton_clicked();
+
+    void on_stopFindTargetWindowPushButton_clicked();
 
 private:
     QString qStringWindowName;
     void showScreenshotImage(HWND window);
     void showImage();
-    HWND getTargetWindow();
+    HWND getMouseCursorPositionWindow();
+    QString getCursorHWNDInfo(HWND window);
     Ui::MainWindow *ui;
     QScreen *screen = NULL;
     QImage screenShotQImage;
@@ -51,7 +54,8 @@ private:
     JumpJump jumpGame;
     bool isGetImage = false;
     double distance = 0.0;
-    QTimer *autoTimer;
+    QTimer *timerGetNextFrame;
+    QTimer *timerGetTargetWindow;
     double distanceParameter = 5.0;
     POINT currentMousePostion;
 };

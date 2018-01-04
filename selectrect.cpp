@@ -11,9 +11,11 @@ SelectRect::SelectRect(QWidget *parent) : QWidget(parent)
     subMenu = new QMenu();
     subActionReset = subMenu->addAction(tr("重选"));
     subActionSave = subMenu->addAction(tr("另存为"));
+    subActionSendRect = subMenu->addAction(tr("发送选中信息"));
     subActionExit = subMenu->addAction(tr("退出"));
     connect(subActionExit,SIGNAL(triggered()),this,SLOT(select_exit()));
     connect(subActionSave,SIGNAL(triggered()),this,SLOT(cut_img()));
+    connect(subActionSendRect,SIGNAL(triggered()),this,SLOT(get_rect_info()));
     connect(subActionReset,SIGNAL(triggered()),this,SLOT(select_reset()));
     // 关闭后释放资源
     this->setAttribute(Qt::WA_DeleteOnClose);
@@ -169,11 +171,27 @@ void SelectRect::cut_img()
 //            qDebug() << x << y << w << h;
             if(w > 0 && h > 0)
             {
-                *save_img = temp->copy(x,y,w,h);
-                QString filename = QFileDialog::getSaveFileName(this, tr("Save File"),
-                                                                "C:/",
-                                                                tr("Images (*.png *.xpm *.jpg *.tiff *.bmp)"));
-                save_img->save(filename);
+                if(is_only_send_rect_info)
+                {
+                    // 打包发送的数据
+                    is_only_send_rect_info = false;
+                    QByteArray datagram;
+                    QDataStream outStream(&datagram,QIODevice::WriteOnly);
+                    outStream<<(quint8)x
+                             <<(quint8)y
+                             <<(quint8)w
+                             <<(quint8)h;
+//                    qDebug() << "send " << x << y << w << h;
+                    emit send_selected_rect(datagram);
+                }
+                else
+                {
+                    *save_img = temp->copy(x,y,w,h);
+                    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"),
+                                                                    "C:/",
+                                                                    tr("Images (*.png *.xpm *.jpg *.tiff *.bmp)"));
+                    save_img->save(filename);
+                }
             }
             else
             {
@@ -189,6 +207,12 @@ void SelectRect::cut_img()
         QMessageBox msgBox(QMessageBox::Critical,tr("错误"),tr("未选中图像！"));
         msgBox.exec();
     }
+}
+
+void SelectRect::get_rect_info()
+{
+    is_only_send_rect_info = true;
+    cut_img();
 }
 
 void SelectRect::receive_parent_size_changed_value(int width, int height)

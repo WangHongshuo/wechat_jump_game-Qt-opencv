@@ -45,6 +45,7 @@ protected:
 
 signals:
     void select_mode_exit();
+    void send_selected_rect(QByteArray out);
 public slots:
 
 
@@ -53,6 +54,7 @@ private slots:
     void select_exit();
     void select_reset();
     void cut_img();
+    void get_rect_info();
 
 
 private:
@@ -65,6 +67,7 @@ private:
     QMenu* subMenu;
     QAction* subActionReset;
     QAction* subActionSave;
+    QAction* subActionSendRect;
     QAction* subActionExit;
     rect_info rect;
     int first_mouse_pos_x;
@@ -72,6 +75,7 @@ private:
     int mouse;
     QImage* image;
     bool is_image_load;
+    bool is_only_send_rect_info = false;
 
 };
 

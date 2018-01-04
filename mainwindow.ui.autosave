@@ -56,8 +56,8 @@
    <widget class="QCheckBox" name="isLockCheckBox">
     <property name="geometry">
      <rect>
-      <x>700</x>
-      <y>510</y>
+      <x>670</x>
+      <y>490</y>
       <width>71</width>
       <height>16</height>
      </rect>
@@ -166,8 +166,8 @@
    <widget class="QCheckBox" name="autoGetImageCheckBox">
     <property name="geometry">
      <rect>
-      <x>700</x>
-      <y>530</y>
+      <x>670</x>
+      <y>510</y>
       <width>71</width>
       <height>16</height>
      </rect>

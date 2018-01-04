@@ -6,12 +6,22 @@ This game is very hot and I try my best to make a tool with the help of other's 
 Now I finished basic funciton such as fix parameters and manual distance measurement function. The relation between distance and key press time is complex, the image resolution may have some influence on it. I will optimize it when I'm free.
 
 这个东西最近好火，跟着别人的思路用C++试了试，感觉好难。       
-目前只完成了调系数和手动测距功能，距离和鼠标按下时间的关系可能没那么简单，和手机分辨率也有关系。有时间试下能不能自动化。      
+目前只完成了调系数和手动测距功能，距离和鼠标按下时间的关系可能没那么简单，和手机分辨率也有关系。有时间试下能不能自动化。
+
+Click Get Window and move your mouse to point the target window, press S to stop finding window handle when get target window handle.     
+
+点击Get Window将鼠标指向目标窗口，获取目标窗口的图像和句柄后按S键停止寻找鼠标所指窗口句柄。           
 ## Screenshot: ##
 ![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme.png)
 ## Change Log: ##
 
-- 2018.1.4:        
+- 2018.1.4 #2:     
+
+Rewrote get window handle funciton and now you can get the window handle and name by moving your mouse to point the window.     
+
+重写了获取窗口句柄部分，改为获取鼠标所指窗口的句柄和名称。     
+
+- 2018.1.4 #1:        
    
 Prepare to rebuild. The way to get HWND is too stupid.     
 

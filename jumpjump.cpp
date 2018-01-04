@@ -31,7 +31,8 @@ void JumpJump::mainTask()
 
 void JumpJump::getEdge(cv::Mat &src, cv::Mat &dst, double threshold1, double threshold2)
 {
-    if(src.channels() == 3)
-        cv::cvtColor(src,dst,CV_RGB2GRAY);
-    cv::Canny(src,dst,threshold1,threshold2);
+//    if(src.channels() == 3)
+//        cv::cvtColor(src,dst,CV_RGB2GRAY);
+//    cv::Canny(src,dst,threshold1,threshold2);
+    dst = src;
 }

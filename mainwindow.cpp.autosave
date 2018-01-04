@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->showImageWidget,SIGNAL(send_distance(double)),this,SLOT(receiveDistance(double)));
     connect(ui->showImageWidget,SIGNAL(send_x1_y1(QString)),this,SLOT(receivedX1Y1(QString)));
     connect(ui->showImageWidget,SIGNAL(send_x2_y2(QString)),this,SLOT(receivedX2Y2(QString)));
+    
     connect(this->timerGetNextFrame,SIGNAL(timeout()),this,SLOT(on_getImagePushButton_clicked()));
     connect(this->timerGetTargetWindow,SIGNAL(timeout()),this,SLOT(getMouseCursorPositionHWND()));
     connect(ui->showImageWidget,SIGNAL(send_selected_rect_info(QByteArray)),this,SLOT(receiveSelectedRectInfo(QByteArray)));
@@ -47,7 +48,6 @@ void MainWindow::getMouseCursorPositionHWND()
     showScreenshotImage(targetWindow);
     ui->showWindowNameLineEdit->setText(getCursorHWNDInfo(targetWindow));
     ui->showWindowNameLineEdit->setCursorPosition(1);
-    qDebug() << targetWindow;
     ui->showWindowHandleLineEdit->setText(QString::number((long)targetWindow,16));
 }
 
