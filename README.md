@@ -12,7 +12,7 @@ Click Get Window and move your mouse to point the target window, press S to stop
 
 点击Get Window将鼠标指向目标窗口，获取目标窗口的图像和句柄后按S键停止寻找鼠标所指窗口句柄。           
 ## Screenshot: ##
-![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme.png)
+![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme.jpg)
 ## Change Log: ##
 
 - 2018.1.5 #2:     
