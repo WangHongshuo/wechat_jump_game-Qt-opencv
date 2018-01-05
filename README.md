@@ -15,7 +15,13 @@ Click Get Window and move your mouse to point the target window, press S to stop
 ![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme.png)
 ## Change Log: ##
 
-- 2018.1.5:
+- 2018.1.5 #2:     
+
+Used Adb to control the phone, the screenshot was obtained by the third-party software, because the screenshot from Adb is original image (5.8Mb). Fixed bugs when get the window title. 
+
+改为用Adb去控制手机，屏幕图像还是用第三方软件获取，因为Adb获取的截图是没有压缩的，一张截图5M。修复了获取窗口标题的错误。
+
+- 2018.1.5 #1:
 
 It's not a good idea to control and get screen image by the third-party software, I should use Adb to do that. Rewriting...
 

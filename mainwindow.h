@@ -5,6 +5,7 @@
 #include <windows.h>
 #include "jumpjump.h"
 #include <QTimer>
+#include <QProcess>
 
 namespace Ui {
 class MainWindow;
@@ -40,6 +41,8 @@ private slots:
 
     void on_stopFindTargetWindowPushButton_clicked();
 
+    void on_findAdbpushButton_clicked();
+
 private:
     QString qStringWindowName;
     void showScreenshotImage(HWND window);
@@ -56,8 +59,12 @@ private:
     double distance = 0.0;
     QTimer *timerGetNextFrame;
     QTimer *timerGetTargetWindow;
-    double distanceParameter = 5.0;
+    double distanceParameter = 4.0;
     POINT currentMousePostion;
+    QProcess adbProcess;
+    QString filePath;
+    bool isAdbInitializated = false;
+    WCHAR *windowName = new WCHAR[100];
 };
 
 #endif // MAINWINDOW_H

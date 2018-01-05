@@ -7,16 +7,17 @@
 #include <QMessageBox>
 #include <QWindow>
 #include <QTimer>
+#include <iostream>
 #include "mat_qimage_convert.h"
 
-// UTF-8 without BOM
+// ANSI
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    // åªæŽ¥å—æ•°å­—
+    // Ö»½ÓÊÜÊý×Ö
     QRegExp rx("^(-?[0]|-?[1-9][0-9]{0,5})(?:\\.\\d{1,4})?$|(^\\t?$)");
     QRegExpValidator *pReg = new QRegExpValidator(rx, this);
     ui->distanceParameterLineEdit->setValidator(pReg);
@@ -38,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete windowName;
     delete ui;
 }
 
@@ -83,9 +85,8 @@ HWND MainWindow::getMouseCursorPositionWindow()
 
 QString MainWindow::getCursorHWNDInfo(HWND window)
 {
-    LPWSTR windowName;
-    ::GetWindowTextW(window,windowName,100);
-    QString qWindowName = QString::fromStdWString(windowName);
+    ::GetWindowTextW(window,windowName,99);
+    QString qWindowName = QString::fromWCharArray(windowName);
     return qWindowName;
 }
 
@@ -144,18 +145,20 @@ void MainWindow::receivedX2Y2(QString receiveData)
 
 void MainWindow::on_jumpPushButton_clicked()
 {
-    RECT windowRect;
-    ::GetWindowRect(targetWindow,&windowRect);
-    ::GetCursorPos(&currentMousePostion);
-    ::SetCursorPos(windowRect.left+20,windowRect.top+100);
-    ::Sleep(100);
-    mouse_event(MOUSEEVENTF_LEFTDOWN,0,0,0,0);
-    distanceParameter = ui->distanceParameterLineEdit->text().toDouble();
-
-    ::Sleep(int(distance*distanceParameter));
-
-    mouse_event(MOUSEEVENTF_LEFTUP,0,0,0,0);
-    ::SetCursorPos(currentMousePostion.x,currentMousePostion.y);
+    if(!isAdbInitializated)
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr("Can't find adb.exe!"));
+        msgBox.exec();
+    }
+    else
+    {
+        distanceParameter = ui->distanceParameterLineEdit->text().toDouble();
+        QString cmd = filePath + " shell input swipe 200 200 200 200 " +
+                QString::number(int(distanceParameter*distance));
+//        qDebug() << cmd;
+        adbProcess.start(cmd);
+    }
 }
 
 void MainWindow::receiveSelectedRectInfo(QByteArray in)
@@ -192,4 +195,32 @@ void MainWindow::on_stopFindTargetWindowPushButton_clicked()
     timerGetTargetWindow->stop();
     ui->findTargetWindowPushButton->setEnabled(true);
     ui->stopFindTargetWindowPushButton->setEnabled(false);
+}
+
+void MainWindow::on_findAdbpushButton_clicked()
+{
+    filePath = QFileDialog::getOpenFileName(this,tr("Open adb.exe"),
+                                                        "C:/",
+                                                        tr("adb file(adb.exe)"));
+    filePath.chop(4);
+    adbProcess.start(filePath);
+    if(!adbProcess.waitForFinished())
+    {
+        ui->adbStateNameLineEdit->setText("adb error!");
+        isAdbInitializated = false;
+    }
+    else
+    {
+        QString output =QString::fromLocal8Bit(adbProcess.readAllStandardError());
+        if(output.startsWith("Android Debug Bridge"))
+        {
+            ui->adbStateNameLineEdit->setText("adb ok!");
+            isAdbInitializated = true;
+        }
+        else
+        {
+            ui->adbStateNameLineEdit->setText("adb error!");
+            isAdbInitializated = false;
+        }
+    }
 }
