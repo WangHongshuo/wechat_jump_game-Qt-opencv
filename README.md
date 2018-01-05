@@ -15,6 +15,12 @@ Click Get Window and move your mouse to point the target window, press S to stop
 ![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme.png)
 ## Change Log: ##
 
+- 2018.1.5:
+
+It's not a good idea to control and get screen image by the third-party software, I should use Adb to do that. Rewriting...
+
+用第三方软件获取手机屏幕图像和操控手机不如自己调用Adb，推倒重写。
+
 - 2018.1.4 #2:     
 
 Rewrote get window handle funciton and now you can get the window handle and name by moving your mouse to point the window.     
