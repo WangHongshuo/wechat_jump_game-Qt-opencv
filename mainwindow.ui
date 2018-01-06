@@ -24,11 +24,11 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="findTargetWindowPushButton">
+   <widget class="QPushButton" name="pushButtonFindTargetWindow">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>460</y>
+      <x>580</x>
+      <y>420</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -37,11 +37,11 @@
      <string>Get Window</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="stopFindTargetWindowPushButton">
+   <widget class="QPushButton" name="pushButtonStopFindTargetWindow">
     <property name="geometry">
      <rect>
-      <x>670</x>
-      <y>460</y>
+      <x>710</x>
+      <y>420</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -53,11 +53,11 @@
      <string>S</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="isLockCheckBox">
+   <widget class="QCheckBox" name="checkBoxIsLock">
     <property name="geometry">
      <rect>
-      <x>700</x>
-      <y>510</y>
+      <x>710</x>
+      <y>450</y>
       <width>71</width>
       <height>16</height>
      </rect>
@@ -66,11 +66,11 @@
      <string>Lock</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="getImagePushButton">
+   <widget class="QPushButton" name="pushButtonGetImage">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>510</y>
+      <x>580</x>
+      <y>460</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -95,7 +95,7 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QSlider" name="cannyThreshold1Slider">
+   <widget class="QSlider" name="sliderCannyThreshold1">
     <property name="geometry">
      <rect>
       <x>690</x>
@@ -111,7 +111,7 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QSpinBox" name="cannyThreshold1SpinBox">
+   <widget class="QSpinBox" name="spinBoxCannyThreshold1">
     <property name="geometry">
      <rect>
       <x>680</x>
@@ -137,11 +137,11 @@
      <number>1000</number>
     </property>
    </widget>
-   <widget class="QPushButton" name="jumpPushButton">
+   <widget class="QPushButton" name="pushButtonJump">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>280</y>
+      <x>540</x>
+      <y>230</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -153,21 +153,21 @@
      <string>J</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="distanceParameterLineEdit">
+   <widget class="QLineEdit" name="lineEditDistanceParameter">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>310</y>
+      <x>530</x>
+      <y>270</y>
       <width>113</width>
       <height>20</height>
      </rect>
     </property>
    </widget>
-   <widget class="QCheckBox" name="autoGetImageCheckBox">
+   <widget class="QCheckBox" name="checkBoxAutoGetImage">
     <property name="geometry">
      <rect>
-      <x>700</x>
-      <y>530</y>
+      <x>710</x>
+      <y>470</y>
       <width>71</width>
       <height>16</height>
      </rect>
@@ -209,7 +209,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLabel" name="x1y1Label">
+      <widget class="QLabel" name="labelX1Y1">
        <property name="minimumSize">
         <size>
          <width>99</width>
@@ -250,7 +250,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLabel" name="x2y2Label">
+      <widget class="QLabel" name="labelX2Y2">
        <property name="minimumSize">
         <size>
          <width>99</width>
@@ -291,7 +291,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLabel" name="distanceLabel">
+      <widget class="QLabel" name="labelDistance">
        <property name="minimumSize">
         <size>
          <width>99</width>
@@ -314,8 +314,8 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>550</x>
-      <y>400</y>
+      <x>570</x>
+      <y>360</y>
       <width>225</width>
       <height>48</height>
      </rect>
@@ -344,7 +344,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="showWindowNameLineEdit">
+      <widget class="QLineEdit" name="lineEditShowWindowName">
        <property name="cursorPosition">
         <number>0</number>
        </property>
@@ -376,7 +376,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="showWindowHandleLineEdit">
+      <widget class="QLineEdit" name="lineEditShowWindowHandle">
        <property name="cursorPosition">
         <number>0</number>
        </property>
@@ -387,12 +387,12 @@
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="findAdbpushButton">
+   <widget class="QPushButton" name="pushButtonFindAdb">
     <property name="geometry">
      <rect>
-      <x>580</x>
-      <y>610</y>
-      <width>75</width>
+      <x>414</x>
+      <y>520</y>
+      <width>101</width>
       <height>23</height>
      </rect>
     </property>
@@ -400,12 +400,12 @@
      <string>Find Adb</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="adbStateNameLineEdit">
+   <widget class="QLineEdit" name="lineEditAdbState">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>580</y>
-      <width>133</width>
+      <x>520</x>
+      <y>520</y>
+      <width>241</width>
       <height>20</height>
      </rect>
     </property>
@@ -414,6 +414,48 @@
     </property>
     <property name="readOnly">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonSetTempPath">
+    <property name="geometry">
+     <rect>
+      <x>414</x>
+      <y>560</y>
+      <width>101</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set Temp Path</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEditTempPath">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>560</y>
+      <width>241</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="cursorPosition">
+     <number>0</number>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonGetScreenshotImage">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>600</y>
+      <width>101</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Get Screenshot</string>
     </property>
    </widget>
   </widget>
@@ -449,9 +491,9 @@
  <resources/>
  <connections>
   <connection>
-   <sender>cannyThreshold1Slider</sender>
+   <sender>sliderCannyThreshold1</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>cannyThreshold1SpinBox</receiver>
+   <receiver>spinBoxCannyThreshold1</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -465,9 +507,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>cannyThreshold1SpinBox</sender>
+   <sender>spinBoxCannyThreshold1</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>cannyThreshold1Slider</receiver>
+   <receiver>sliderCannyThreshold1</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">

@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QWindow>
 #include <QTimer>
+#include <QTime>
 #include <iostream>
 #include "mat_qimage_convert.h"
 
@@ -20,21 +21,26 @@ MainWindow::MainWindow(QWidget *parent) :
     // 只接受数字
     QRegExp rx("^(-?[0]|-?[1-9][0-9]{0,5})(?:\\.\\d{1,4})?$|(^\\t?$)");
     QRegExpValidator *pReg = new QRegExpValidator(rx, this);
-    ui->distanceParameterLineEdit->setValidator(pReg);
-    ui->distanceParameterLineEdit->setText(QString::number(distanceParameter));
+    tempImageSavePath = QCoreApplication::applicationDirPath();
+    adbFilePath = QCoreApplication::applicationDirPath() + "\\adb\\adb";
+    ui->lineEditTempPath->setText(tempImageSavePath + "/temp.png");
+    ui->lineEditTempPath->setCursorPosition(1);
+    ui->lineEditDistanceParameter->setValidator(pReg);
+    ui->lineEditDistanceParameter->setText(QString::number(distanceParameter));
 
     timerGetNextFrame = new QTimer(this);
     timerGetTargetWindow = new QTimer(this);
     ui->showImageWidget->set_enable_drag_image(false);
     ui->showImageWidget->set_enable_zoom_image(false);
-    ui->stopFindTargetWindowPushButton->setEnabled(false);
+    ui->pushButtonStopFindTargetWindow->setEnabled(false);
 
     connect(ui->showImageWidget,SIGNAL(send_distance(double)),this,SLOT(receiveDistance(double)));
     connect(ui->showImageWidget,SIGNAL(send_x1_y1(QString)),this,SLOT(receivedX1Y1(QString)));
     connect(ui->showImageWidget,SIGNAL(send_x2_y2(QString)),this,SLOT(receivedX2Y2(QString)));
-    connect(this->timerGetNextFrame,SIGNAL(timeout()),this,SLOT(on_getImagePushButton_clicked()));
+    connect(this->timerGetNextFrame,SIGNAL(timeout()),this,SLOT(on_pushButtonGetImage_clicked()));
     connect(this->timerGetTargetWindow,SIGNAL(timeout()),this,SLOT(getMouseCursorPositionHWND()));
     connect(ui->showImageWidget,SIGNAL(send_selected_rect_info(QByteArray)),this,SLOT(receiveSelectedRectInfo(QByteArray)));
+    initializeAdbServer();
 }
 
 MainWindow::~MainWindow()
@@ -47,10 +53,10 @@ void MainWindow::getMouseCursorPositionHWND()
 {
     targetWindow = getMouseCursorPositionWindow();
     showScreenshotImage(targetWindow);
-    ui->showWindowNameLineEdit->setText(getCursorHWNDInfo(targetWindow));
-    ui->showWindowNameLineEdit->setCursorPosition(1);
-    qDebug() << targetWindow;
-    ui->showWindowHandleLineEdit->setText(QString::number((long)targetWindow,16));
+    ui->lineEditShowWindowName->setText(getCursorHWNDName(targetWindow));
+    ui->lineEditShowWindowName->setCursorPosition(1);
+//    qDebug() << targetWindow;
+    ui->lineEditShowWindowHandle->setText(QString::number((long)targetWindow,16));
 }
 
 void MainWindow::showScreenshotImage(HWND window)
@@ -70,6 +76,21 @@ void MainWindow::showScreenshotImage(HWND window)
     ui->showImageWidget->set_image_with_pointer(&screenShotQImage);
 }
 
+void MainWindow::showScreenshotImage(QString tempImagePath)
+{
+    screenShotQImage.load(tempImagePath);
+    screenShotQImage = screenShotQImage.convertToFormat(QImage::Format_RGB888);
+    qDebug() << screenShotQImage.bits();
+    screenShotMat = QImage2Mat_with_pointer(screenShotQImage);
+    qDebug() << screenShotMat.data;
+    // To do something
+
+
+    screenShotQImage = Mat2QImage_with_pointer(screenShotMat);
+    qDebug() << screenShotQImage.bits();
+//    ui->showImageWidget->set_image_with_pointer(&screenShotQImage);
+}
+
 void MainWindow::showImage()
 {
     screenShotQImage = Mat2QImage_with_pointer(jumpGame.outputImage);
@@ -83,31 +104,58 @@ HWND MainWindow::getMouseCursorPositionWindow()
     return window;
 }
 
-QString MainWindow::getCursorHWNDInfo(HWND window)
+QString MainWindow::getCursorHWNDName(HWND window)
 {
     ::GetWindowTextW(window,windowName,99);
     QString qWindowName = QString::fromWCharArray(windowName);
     return qWindowName;
 }
 
-void MainWindow::on_isLockCheckBox_stateChanged(int arg1)
+void MainWindow::initializeAdbServer()
 {
-    if(arg1)
+    adbProcess.start(adbFilePath + " devices");
+    adbProcess.waitForFinished();
+    adbProcess.start(adbFilePath + " devices");
+    if(!adbProcess.waitForFinished())
     {
-        ui->showWindowNameLineEdit->setEnabled(false);
+        ui->lineEditAdbState->setText("adb error!");
+        isAdbInitializated = false;
     }
     else
     {
-        ui->showWindowNameLineEdit->setEnabled(true);
+        QString output =QString::fromLocal8Bit(adbProcess.readAllStandardOutput());
+        output = output.simplified();
+        if(output.startsWith("List of devices attached"))
+        {
+            ui->lineEditAdbState->setText("Find: " + output.mid(25));
+            isAdbInitializated = true;
+        }
+        else
+        {
+            ui->lineEditAdbState->setText("adb error!");
+            isAdbInitializated = false;
+        }
     }
 }
 
-void MainWindow::on_getImagePushButton_clicked()
+void MainWindow::on_checkBoxIsLock_stateChanged(int arg1)
+{
+    if(arg1)
+    {
+        ui->lineEditShowWindowName->setEnabled(false);
+    }
+    else
+    {
+        ui->lineEditShowWindowName->setEnabled(true);
+    }
+}
+
+void MainWindow::on_pushButtonGetImage_clicked()
 {
     showScreenshotImage(targetWindow);
 }
 
-void MainWindow::on_cannyThreshold1Slider_valueChanged(int value)
+void MainWindow::on_sliderCannyThreshold1_valueChanged(int value)
 {
     if(isGetImage)
     {
@@ -130,20 +178,20 @@ void MainWindow::on_cannyThreshold2Slider_valueChanged(int value)
 void MainWindow::receiveDistance(double receiveData)
 {
     distance = receiveData;
-    ui->distanceLabel->setText(QString::number(distance));
+    ui->labelDistance->setText(QString::number(distance));
 }
 
 void MainWindow::receivedX1Y1(QString receiveData)
 {
-    ui->x1y1Label->setText(receiveData);
+    ui->labelX1Y1->setText(receiveData);
 }
 
 void MainWindow::receivedX2Y2(QString receiveData)
 {
-    ui->x2y2Label->setText(receiveData);
+    ui->labelX2Y2->setText(receiveData);
 }
 
-void MainWindow::on_jumpPushButton_clicked()
+void MainWindow::on_pushButtonJump_clicked()
 {
     if(!isAdbInitializated)
     {
@@ -153,8 +201,8 @@ void MainWindow::on_jumpPushButton_clicked()
     }
     else
     {
-        distanceParameter = ui->distanceParameterLineEdit->text().toDouble();
-        QString cmd = filePath + " shell input swipe 200 200 200 200 " +
+        distanceParameter = ui->lineEditDistanceParameter->text().toDouble();
+        QString cmd = adbFilePath + " shell input swipe 200 200 200 200 " +
                 QString::number(int(distanceParameter*distance));
 //        qDebug() << cmd;
         adbProcess.start(cmd);
@@ -171,7 +219,7 @@ void MainWindow::receiveSelectedRectInfo(QByteArray in)
 }
 
 
-void MainWindow::on_autoGetImageCheckBox_stateChanged(int arg1)
+void MainWindow::on_checkBoxAutoGetImage_stateChanged(int arg1)
 {
     if(arg1)
     {
@@ -182,45 +230,79 @@ void MainWindow::on_autoGetImageCheckBox_stateChanged(int arg1)
         timerGetNextFrame->stop();
 }
 
-void MainWindow::on_findTargetWindowPushButton_clicked()
+void MainWindow::on_pushButtonFindTargetWindow_clicked()
 {
-    ui->findTargetWindowPushButton->setEnabled(false);
-    ui->stopFindTargetWindowPushButton->setEnabled(true);
+    ui->pushButtonFindTargetWindow->setEnabled(false);
+    ui->pushButtonStopFindTargetWindow->setEnabled(true);
     timerGetTargetWindow->setInterval(500);
     timerGetTargetWindow->start();
 }
 
-void MainWindow::on_stopFindTargetWindowPushButton_clicked()
+void MainWindow::on_pushButtonStopFindTargetWindow_clicked()
 {
     timerGetTargetWindow->stop();
-    ui->findTargetWindowPushButton->setEnabled(true);
-    ui->stopFindTargetWindowPushButton->setEnabled(false);
+    ui->pushButtonFindTargetWindow->setEnabled(true);
+    ui->pushButtonStopFindTargetWindow->setEnabled(false);
 }
 
-void MainWindow::on_findAdbpushButton_clicked()
+void MainWindow::on_pushButtonFindAdb_clicked()
 {
-    filePath = QFileDialog::getOpenFileName(this,tr("Open adb.exe"),
-                                                        "C:/",
+    adbFilePath = QFileDialog::getOpenFileName(this,tr("Open adb.exe"),
+                                                        QCoreApplication::applicationDirPath(),
                                                         tr("adb file(adb.exe)"));
-    filePath.chop(4);
-    adbProcess.start(filePath);
-    if(!adbProcess.waitForFinished())
+    qDebug() << adbFilePath;
+    adbFilePath.chop(4);
+    adbFilePath = QDir::toNativeSeparators(adbFilePath);
+    initializeAdbServer();
+}
+
+void MainWindow::on_pushButtonSetTempPath_clicked()
+{
+    tempImageSavePath = QFileDialog::getExistingDirectory(this,tr("Where to set temp image"),
+                                                          QCoreApplication::applicationDirPath());
+    if(tempImageSavePath.isEmpty())
     {
-        ui->adbStateNameLineEdit->setText("adb error!");
-        isAdbInitializated = false;
+        QMessageBox msgBox;
+        msgBox.setText(tr("Path is empty!"));
+        msgBox.exec();
+        tempImageSavePath = QCoreApplication::applicationDirPath();
+    }
+    ui->lineEditTempPath->setText(tempImageSavePath + "/temp.bmp");
+    ui->lineEditTempPath->setCursorPosition(1);
+}
+
+void MainWindow::on_pushButtonGetScreenshotImage_clicked()
+{
+    if(!isAdbInitializated)
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr("Adb initialization failed!"));
+        msgBox.exec();
     }
     else
     {
-        QString output =QString::fromLocal8Bit(adbProcess.readAllStandardError());
-        if(output.startsWith("Android Debug Bridge"))
-        {
-            ui->adbStateNameLineEdit->setText("adb ok!");
-            isAdbInitializated = true;
-        }
+        QString path = tempImageSavePath.replace(QString("/"),QString("\\"));
+        QString cmd = adbFilePath + " shell /system/bin/screencap -p /sdcard/temp.png";
+//        qDebug() << cmd;
+
+        // it takes too much time
+        adbProcess.start(cmd);
+        if(!adbProcess.waitForFinished())
+            ui->lineEditAdbState->setText("Error in get Screenshot!");
+//        qDebug() << QString::fromLocal8Bit(adbProcess.readAllStandardOutput());
         else
         {
-            ui->adbStateNameLineEdit->setText("adb error!");
-            isAdbInitializated = false;
+            cmd = adbFilePath + " pull /sdcard/temp.png " + path;
+//            qDebug() << cmd;
+            adbProcess.start(cmd);
+            if(adbProcess.waitForFinished())
+            {
+                ui->lineEditAdbState->setText("Done!");
+                showScreenshotImage(tempImageSavePath + "\\temp.png");
+            }
+            else
+                ui->lineEditAdbState->setText("Error in copying image to disk.");
+//            qDebug() << QString::fromLocal8Bit(adbProcess.readAllStandardOutput());
         }
     }
 }
