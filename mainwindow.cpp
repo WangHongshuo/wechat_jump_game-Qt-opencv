@@ -127,8 +127,13 @@ void MainWindow::initializeAdbServer()
         output = output.simplified();
         if(output.startsWith("List of devices attached"))
         {
-            ui->lineEditAdbState->setText("Find: " + output.mid(25));
-            isAdbInitializated = true;
+            if(output.mid(25).isEmpty() || output.mid(25).isNull())
+                ui->lineEditAdbState->setText("No Devices!");
+            else
+            {
+                ui->lineEditAdbState->setText("Find: " + output.mid(25));
+                isAdbInitializated = true;
+            }
         }
         else
         {
