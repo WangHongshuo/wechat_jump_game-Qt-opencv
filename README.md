@@ -15,6 +15,12 @@ Click Get Window and move your mouse to point the target window, press S to stop
 ![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme.jpg)
 ## Change Log: ##
 
+- 2018.1.7:     
+
+Optimized get screenshot function. Now it only needs one adb command instead of two adb commands to get screenshot. It uses `adb shell screencap -p`  to get PNG image stdout and then catch the stdout, convert the binary data to QImage or Mat. It will not create image files in the phone or the PC disk (maybe create image files in the phone, but I can't find it), reduce I/O operation. And now it will takes 900ms to get screenshot in the PC memory, the last version will take 2000ms.
+
+优化了获取手机截图的方式，由原来的执行两条Adb命令（截图到手机和从手机获取图片到本地磁盘）,改为只执行一条Adb命令，获取adb shell screencap -p 命令的stdout输出，转化为QImage或Mat，不再本地磁盘生成图片文件，减少I/O。获取同样的截屏，由原来的2000ms左右减少到900ms左右。
+
 - 2018.1.5 #2:     
 
 Used Adb to control the phone, the screenshot was obtained by the third-party software, because the screenshot from Adb is original image (5.8Mb). Fixed bugs when get the window title. 

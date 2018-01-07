@@ -38,6 +38,8 @@ private slots:
     void on_pushButtonSetTempPath_clicked();
     void on_pushButtonGetScreenshotImage_clicked();
 
+    void on_pushButtonRefreshAdb_clicked();
+
 private:
     QString qStringWindowName;
     void showScreenshotImage(HWND window);

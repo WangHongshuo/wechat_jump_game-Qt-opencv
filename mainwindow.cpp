@@ -8,8 +8,13 @@
 #include <QWindow>
 #include <QTimer>
 #include <QTime>
+#include <QBuffer>
 #include <iostream>
+#include <QImageReader>
 #include "mat_qimage_convert.h"
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
 
 // ANSI
 
@@ -128,7 +133,10 @@ void MainWindow::initializeAdbServer()
         if(output.startsWith("List of devices attached"))
         {
             if(output.mid(25).isEmpty() || output.mid(25).isNull())
+            {
                 ui->lineEditAdbState->setText("No Devices!");
+                isAdbInitializated = false;
+            }
             else
             {
                 ui->lineEditAdbState->setText("Find: " + output.mid(25));
@@ -278,6 +286,8 @@ void MainWindow::on_pushButtonSetTempPath_clicked()
 
 void MainWindow::on_pushButtonGetScreenshotImage_clicked()
 {
+    QTime a;
+    a.start();
     if(!isAdbInitializated)
     {
         QMessageBox msgBox;
@@ -287,27 +297,37 @@ void MainWindow::on_pushButtonGetScreenshotImage_clicked()
     else
     {
         QString path = tempImageSavePath.replace(QString("/"),QString("\\"));
-        QString cmd = adbFilePath + " shell /system/bin/screencap -p /sdcard/temp.png";
-//        qDebug() << cmd;
-
+        QString cmd = adbFilePath + " shell screencap -p";
+        qDebug() << cmd;
+        adbProcess.setProcessChannelMode(QProcess::MergedChannels);
         // it takes too much time
         adbProcess.start(cmd);
         if(!adbProcess.waitForFinished())
-            ui->lineEditAdbState->setText("Error in get Screenshot!");
-//        qDebug() << QString::fromLocal8Bit(adbProcess.readAllStandardOutput());
-        else
-        {
-            cmd = adbFilePath + " pull /sdcard/temp.png " + path;
-//            qDebug() << cmd;
-            adbProcess.start(cmd);
-            if(adbProcess.waitForFinished())
-            {
-                ui->lineEditAdbState->setText("Done!");
-                showScreenshotImage(tempImageSavePath + "\\temp.png");
-            }
-            else
-                ui->lineEditAdbState->setText("Error in copying image to disk.");
-//            qDebug() << QString::fromLocal8Bit(adbProcess.readAllStandardOutput());
-        }
+            qDebug() << "Error or timeout!";
+        QByteArray data;
+        data = adbProcess.readAll();
+//        qDebug() << data.length();
+        data = data.replace("\r\r\n","\n");
+//        qDebug() << data.length();
+
+        // to Mat
+//        std::vector<uchar> pData(data.begin(),data.end());
+//        cv::Mat img = cv::imdecode(pData,CV_LOAD_IMAGE_COLOR);
+//        QImage qImg = Mat2QImage_with_pointer(img);
+
+        // to QImage
+        QBuffer buffer(&data);
+        QImageReader reader(&buffer);
+        reader.setFormat("PNG");
+        QImage img = reader.read();
+
+        qDebug() << a.elapsed();
+        ui->showImageWidget->set_image_with_data(img);
+
     }
+}
+
+void MainWindow::on_pushButtonRefreshAdb_clicked()
+{
+    initializeAdbServer();
 }
