@@ -233,7 +233,6 @@ void ImageWidget::select()
         m->setGeometry(0,0,this->geometry().width(),this->geometry().height());
         connect(m,SIGNAL(select_mode_exit()),this,SLOT(is_select_mode_exit()));
         connect(this,SIGNAL(parent_widget_size_changed(int,int)),m,SLOT(receive_parent_size_changed_value(int,int)));
-        connect(m,SIGNAL(send_selected_rect(QByteArray)),this,SLOT(receive_selected_rect_info(QByteArray)));
         m->set_image(mp_img);
         m->scalex = scalex;
         m->scaley = scaley;
@@ -272,11 +271,6 @@ void ImageWidget::is_select_mode_exit()
 {
     is_select_mode = false;
     //    qDebug() << is_select_mode;
-}
-
-void ImageWidget::receive_selected_rect_info(QByteArray in)
-{
-    emit send_selected_rect_info(in);
 }
 
 void ImageWidget::set_default_parameters()

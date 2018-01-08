@@ -26,94 +26,31 @@ MainWindow::MainWindow(QWidget *parent) :
     // 只接受数字
     QRegExp rx("^(-?[0]|-?[1-9][0-9]{0,5})(?:\\.\\d{1,4})?$|(^\\t?$)");
     QRegExpValidator *pReg = new QRegExpValidator(rx, this);
-    tempImageSavePath = QCoreApplication::applicationDirPath();
     adbFilePath = QCoreApplication::applicationDirPath() + "\\adb\\adb";
-    ui->lineEditTempPath->setText(tempImageSavePath + "/temp.png");
-    ui->lineEditTempPath->setCursorPosition(1);
     ui->lineEditDistanceParameter->setValidator(pReg);
     ui->lineEditDistanceParameter->setText(QString::number(distanceParameter));
 
-    timerGetNextFrame = new QTimer(this);
-    timerGetTargetWindow = new QTimer(this);
-    ui->showImageWidget->set_enable_drag_image(false);
-    ui->showImageWidget->set_enable_zoom_image(false);
-    ui->pushButtonStopFindTargetWindow->setEnabled(false);
+    ui->widgetShowImage->set_enable_drag_image(false);
+    ui->widgetShowImage->set_enable_zoom_image(false);
 
-    connect(ui->showImageWidget,SIGNAL(send_distance(double)),this,SLOT(receiveDistance(double)));
-    connect(ui->showImageWidget,SIGNAL(send_x1_y1(QString)),this,SLOT(receivedX1Y1(QString)));
-    connect(ui->showImageWidget,SIGNAL(send_x2_y2(QString)),this,SLOT(receivedX2Y2(QString)));
-    connect(this->timerGetNextFrame,SIGNAL(timeout()),this,SLOT(on_pushButtonGetImage_clicked()));
-    connect(this->timerGetTargetWindow,SIGNAL(timeout()),this,SLOT(getMouseCursorPositionHWND()));
-    connect(ui->showImageWidget,SIGNAL(send_selected_rect_info(QByteArray)),this,SLOT(receiveSelectedRectInfo(QByteArray)));
+    connect(ui->widgetShowImage,SIGNAL(send_distance(double)),this,SLOT(receiveDistance(double)));
     initializeAdbServer();
 }
 
 MainWindow::~MainWindow()
 {
-    delete windowName;
     delete ui;
 }
 
-void MainWindow::getMouseCursorPositionHWND()
+void MainWindow::showScreenshotImage(QImage &src)
 {
-    targetWindow = getMouseCursorPositionWindow();
-    showScreenshotImage(targetWindow);
-    ui->lineEditShowWindowName->setText(getCursorHWNDName(targetWindow));
-    ui->lineEditShowWindowName->setCursorPosition(1);
-//    qDebug() << targetWindow;
-    ui->lineEditShowWindowHandle->setText(QString::number((long)targetWindow,16));
-}
-
-void MainWindow::showScreenshotImage(HWND window)
-{ 
-    screen = QGuiApplication::primaryScreen();
-    screenShotQImage = (screen->grabWindow((WId)window)).toImage();
-
-    // To Do Something
-    screenShotMat = QImage2Mat_with_pointer(screenShotQImage);
-//    int w = screenShotMat.cols;
-//    int h = screenShotMat.rows;
-//    screenShotMat = screenShotMat(cv::Rect(0,(int)(h*0.3),w,(int)(h*(1-0.5))));
-    jumpGame.setImage(screenShotMat);
-    isGetImage = true;
-    screenShotQImage = Mat2QImage_with_pointer(jumpGame.outputImage);
-
-    ui->showImageWidget->set_image_with_pointer(&screenShotQImage);
-}
-
-void MainWindow::showScreenshotImage(QString tempImagePath)
-{
-    screenShotQImage.load(tempImagePath);
-    screenShotQImage = screenShotQImage.convertToFormat(QImage::Format_RGB888);
-    qDebug() << screenShotQImage.bits();
-    screenShotMat = QImage2Mat_with_pointer(screenShotQImage);
-    qDebug() << screenShotMat.data;
-    // To do something
-
-
-    screenShotQImage = Mat2QImage_with_pointer(screenShotMat);
-    qDebug() << screenShotQImage.bits();
-//    ui->showImageWidget->set_image_with_pointer(&screenShotQImage);
+    ui->widgetShowImage->set_image_with_pointer(&src);
 }
 
 void MainWindow::showImage()
 {
-    screenShotQImage = Mat2QImage_with_pointer(jumpGame.outputImage);
-    ui->showImageWidget->set_image_with_pointer(&screenShotQImage);
-}
-
-HWND MainWindow::getMouseCursorPositionWindow()
-{
-    ::GetCursorPos(&currentMousePostion);
-    HWND window = WindowFromPoint(currentMousePostion);
-    return window;
-}
-
-QString MainWindow::getCursorHWNDName(HWND window)
-{
-    ::GetWindowTextW(window,windowName,99);
-    QString qWindowName = QString::fromWCharArray(windowName);
-    return qWindowName;
+    qImageScreenShot = Mat2QImage_with_pointer(jumpGame.outputImage);
+    ui->widgetShowImage->set_image_with_pointer(&qImageScreenShot);
 }
 
 void MainWindow::initializeAdbServer()
@@ -151,23 +88,6 @@ void MainWindow::initializeAdbServer()
     }
 }
 
-void MainWindow::on_checkBoxIsLock_stateChanged(int arg1)
-{
-    if(arg1)
-    {
-        ui->lineEditShowWindowName->setEnabled(false);
-    }
-    else
-    {
-        ui->lineEditShowWindowName->setEnabled(true);
-    }
-}
-
-void MainWindow::on_pushButtonGetImage_clicked()
-{
-    showScreenshotImage(targetWindow);
-}
-
 void MainWindow::on_sliderCannyThreshold1_valueChanged(int value)
 {
     if(isGetImage)
@@ -194,16 +114,6 @@ void MainWindow::receiveDistance(double receiveData)
     ui->labelDistance->setText(QString::number(distance));
 }
 
-void MainWindow::receivedX1Y1(QString receiveData)
-{
-    ui->labelX1Y1->setText(receiveData);
-}
-
-void MainWindow::receivedX2Y2(QString receiveData)
-{
-    ui->labelX2Y2->setText(receiveData);
-}
-
 void MainWindow::on_pushButtonJump_clicked()
 {
     if(!isAdbInitializated)
@@ -222,42 +132,6 @@ void MainWindow::on_pushButtonJump_clicked()
     }
 }
 
-void MainWindow::receiveSelectedRectInfo(QByteArray in)
-{
-    quint8 x, y, w, h;
-    QDataStream inStream(&in,QIODevice::ReadOnly);
-    inStream.setVersion(QDataStream::Qt_5_10);
-    inStream >> x >> y >> w >> h;
-//    qDebug() << "rece: " << x << y << w << h;
-}
-
-
-void MainWindow::on_checkBoxAutoGetImage_stateChanged(int arg1)
-{
-    if(arg1)
-    {
-        timerGetNextFrame->setInterval(1000/24);
-        timerGetNextFrame->start();
-    }
-    else
-        timerGetNextFrame->stop();
-}
-
-void MainWindow::on_pushButtonFindTargetWindow_clicked()
-{
-    ui->pushButtonFindTargetWindow->setEnabled(false);
-    ui->pushButtonStopFindTargetWindow->setEnabled(true);
-    timerGetTargetWindow->setInterval(500);
-    timerGetTargetWindow->start();
-}
-
-void MainWindow::on_pushButtonStopFindTargetWindow_clicked()
-{
-    timerGetTargetWindow->stop();
-    ui->pushButtonFindTargetWindow->setEnabled(true);
-    ui->pushButtonStopFindTargetWindow->setEnabled(false);
-}
-
 void MainWindow::on_pushButtonFindAdb_clicked()
 {
     adbFilePath = QFileDialog::getOpenFileName(this,tr("Open adb.exe"),
@@ -269,25 +143,8 @@ void MainWindow::on_pushButtonFindAdb_clicked()
     initializeAdbServer();
 }
 
-void MainWindow::on_pushButtonSetTempPath_clicked()
-{
-    tempImageSavePath = QFileDialog::getExistingDirectory(this,tr("Where to set temp image"),
-                                                          QCoreApplication::applicationDirPath());
-    if(tempImageSavePath.isEmpty())
-    {
-        QMessageBox msgBox;
-        msgBox.setText(tr("Path is empty!"));
-        msgBox.exec();
-        tempImageSavePath = QCoreApplication::applicationDirPath();
-    }
-    ui->lineEditTempPath->setText(tempImageSavePath + "/temp.bmp");
-    ui->lineEditTempPath->setCursorPosition(1);
-}
-
 void MainWindow::on_pushButtonGetScreenshotImage_clicked()
 {
-    QTime a;
-    a.start();
     if(!isAdbInitializated)
     {
         QMessageBox msgBox;
@@ -296,7 +153,6 @@ void MainWindow::on_pushButtonGetScreenshotImage_clicked()
     }
     else
     {
-        QString path = tempImageSavePath.replace(QString("/"),QString("\\"));
         QString cmd = adbFilePath + " shell screencap -p";
         qDebug() << cmd;
         adbProcess.setProcessChannelMode(QProcess::MergedChannels);
@@ -311,19 +167,22 @@ void MainWindow::on_pushButtonGetScreenshotImage_clicked()
 //        qDebug() << data.length();
 
         // to Mat
-//        std::vector<uchar> pData(data.begin(),data.end());
-//        cv::Mat img = cv::imdecode(pData,CV_LOAD_IMAGE_COLOR);
+//        std::vector<uchar> buffer(data.begin(),data.end());
+//        cv::Mat img = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
 //        QImage qImg = Mat2QImage_with_pointer(img);
 
         // to QImage
         QBuffer buffer(&data);
         QImageReader reader(&buffer);
         reader.setFormat("PNG");
-        QImage img = reader.read();
-
-        qDebug() << a.elapsed();
-        ui->showImageWidget->set_image_with_data(img);
-
+        qImageScreenShot = reader.read();
+        if(!qImageScreenShot.isNull())
+        {
+            isGetImage = true;
+            showScreenshotImage(qImageScreenShot);
+        }
+        else
+            isGetImage = false;
     }
 }
 

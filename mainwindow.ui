@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="ImageWidget" name="showImageWidget" native="true">
+   <widget class="ImageWidget" name="widgetShowImage" native="true">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -22,61 +22,6 @@
       <width>360</width>
       <height>640</height>
      </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonFindTargetWindow">
-    <property name="geometry">
-     <rect>
-      <x>580</x>
-      <y>420</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Get Window</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonStopFindTargetWindow">
-    <property name="geometry">
-     <rect>
-      <x>710</x>
-      <y>420</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Stop Get(S)</string>
-    </property>
-    <property name="shortcut">
-     <string>S</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBoxIsLock">
-    <property name="geometry">
-     <rect>
-      <x>710</x>
-      <y>450</y>
-      <width>71</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Lock</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonGetImage">
-    <property name="geometry">
-     <rect>
-      <x>580</x>
-      <y>460</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Get Image</string>
     </property>
    </widget>
    <widget class="QSlider" name="cannyThreshold2Slider">
@@ -161,19 +106,6 @@
       <width>113</width>
       <height>20</height>
      </rect>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBoxAutoGetImage">
-    <property name="geometry">
-     <rect>
-      <x>710</x>
-      <y>470</y>
-      <width>71</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Auto</string>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
@@ -311,87 +243,11 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>570</x>
-      <y>360</y>
-      <width>225</width>
-      <height>48</height>
-     </rect>
-    </property>
-    <layout class="QFormLayout" name="formLayout_2">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="minimumSize">
-        <size>
-         <width>84</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>84</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Window Name:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEditShowWindowName">
-       <property name="cursorPosition">
-        <number>0</number>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="minimumSize">
-        <size>
-         <width>84</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>84</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Window Handle:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="lineEditShowWindowHandle">
-       <property name="cursorPosition">
-        <number>0</number>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
    <widget class="QPushButton" name="pushButtonFindAdb">
     <property name="geometry">
      <rect>
-      <x>414</x>
-      <y>520</y>
+      <x>590</x>
+      <y>440</y>
       <width>101</width>
       <height>23</height>
      </rect>
@@ -403,38 +259,9 @@
    <widget class="QLineEdit" name="lineEditAdbState">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>520</y>
-      <width>241</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="cursorPosition">
-     <number>0</number>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonSetTempPath">
-    <property name="geometry">
-     <rect>
-      <x>414</x>
-      <y>560</y>
-      <width>101</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Set Temp Path</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEditTempPath">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>560</y>
-      <width>241</width>
+      <x>476</x>
+      <y>400</y>
+      <width>311</width>
       <height>20</height>
      </rect>
     </property>
@@ -448,14 +275,27 @@
    <widget class="QPushButton" name="pushButtonGetScreenshotImage">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>600</y>
+      <x>700</x>
+      <y>440</y>
       <width>101</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>Get Screenshot</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonRefreshAdb">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>440</y>
+      <width>101</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Refresh Adb</string>
     </property>
    </widget>
   </widget>

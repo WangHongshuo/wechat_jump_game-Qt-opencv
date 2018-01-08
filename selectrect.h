@@ -45,7 +45,6 @@ protected:
 
 signals:
     void select_mode_exit();
-    void send_selected_rect(QByteArray out);
 public slots:
 
 

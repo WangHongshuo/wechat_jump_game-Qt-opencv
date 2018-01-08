@@ -34,7 +34,6 @@ signals:
     void send_distance(double distance);
     void send_x1_y1(QString data);
     void send_x2_y2(QString data);
-    void send_selected_rect_info(QByteArray out);
 
 public slots:
 
@@ -43,7 +42,6 @@ private slots:
     void save();
     void select();
     void is_select_mode_exit();
-    void receive_selected_rect_info(QByteArray in);
 
 private:
     void set_default_parameters();
