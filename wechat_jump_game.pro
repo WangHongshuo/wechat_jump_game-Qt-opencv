@@ -26,17 +26,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    ImageWidget.cpp \
-    mat_qimage_convert.cpp \
-    selectrect.cpp \
-    jumpjump.cpp
+    jumpjump.cpp \
+    QImageMatConvert/mat_qimage_convert.cpp \
+    ImageWidget-Qt/ImageWidget.cpp \
+    ImageWidget-Qt/selectrect.cpp
 
 HEADERS += \
         mainwindow.h \
-    ImageWidget.h \
-    mat_qimage_convert.h \
-    selectrect.h \
-    jumpjump.h
+    jumpjump.h \
+    QImageMatConvert/mat_qimage_convert.h \
+    ImageWidget-Qt/ImageWidget.h \
+    ImageWidget-Qt/selectrect.h
 
 FORMS += \
         mainwindow.ui

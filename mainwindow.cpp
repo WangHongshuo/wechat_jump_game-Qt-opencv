@@ -1,20 +1,17 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QScreen>
-#include <TlHelp32.h>
-#include <windows.h>
 #include <QDebug>
 #include <QMessageBox>
-#include <QWindow>
 #include <QTimer>
 #include <QTime>
 #include <QBuffer>
-#include <iostream>
 #include <QImageReader>
-#include "mat_qimage_convert.h"
+#include "QImageMatConvert/mat_qimage_convert.h"
+#include "ImageWidget-Qt/ImageWidget.h"
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
+
 
 // ANSI
 
@@ -30,10 +27,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEditDistanceParameter->setValidator(pReg);
     ui->lineEditDistanceParameter->setText(QString::number(distanceParameter));
 
-    ui->widgetShowImage->set_enable_drag_image(false);
-    ui->widgetShowImage->set_enable_zoom_image(false);
+    ui->widgetShowImage->set_disable_drag_image(true);
+    ui->widgetShowImage->set_disable_zoom_image(true);
 
-    connect(ui->widgetShowImage,SIGNAL(send_distance(double)),this,SLOT(receiveDistance(double)));
     initializeAdbServer();
 }
 
@@ -45,6 +41,12 @@ MainWindow::~MainWindow()
 void MainWindow::showScreenshotImage(QImage &src)
 {
     ui->widgetShowImage->set_image_with_pointer(&src);
+}
+
+void MainWindow::showScreenshotImage(cv::Mat &src)
+{
+    qImageScreenShot = Mat2QImage_with_pointer(src);
+    ui->widgetShowImage->set_image_with_pointer(&qImageScreenShot);
 }
 
 void MainWindow::showImage()
@@ -108,12 +110,6 @@ void MainWindow::on_cannyThreshold2Slider_valueChanged(int value)
     }
 }
 
-void MainWindow::receiveDistance(double receiveData)
-{
-    distance = receiveData;
-    ui->labelDistance->setText(QString::number(distance));
-}
-
 void MainWindow::on_pushButtonJump_clicked()
 {
     if(!isAdbInitializated)
@@ -167,19 +163,19 @@ void MainWindow::on_pushButtonGetScreenshotImage_clicked()
 //        qDebug() << data.length();
 
         // to Mat
-//        std::vector<uchar> buffer(data.begin(),data.end());
-//        cv::Mat img = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
-//        QImage qImg = Mat2QImage_with_pointer(img);
-
+        std::vector<uchar> buffer(data.begin(),data.end());
+        matScreenShot = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
+//        qImageScreenShot = Mat2QImage_with_pointer(matScreenShot);
         // to QImage
-        QBuffer buffer(&data);
-        QImageReader reader(&buffer);
-        reader.setFormat("PNG");
-        qImageScreenShot = reader.read();
-        if(!qImageScreenShot.isNull())
+//        QBuffer buffer(&data);
+//        QImageReader reader(&buffer);
+//        reader.setFormat("PNG");
+//        qImageScreenShot = reader.read();
+
+        if(matScreenShot.data)
         {
             isGetImage = true;
-            showScreenshotImage(qImageScreenShot);
+            showScreenshotImage(matScreenShot);
         }
         else
             isGetImage = false;

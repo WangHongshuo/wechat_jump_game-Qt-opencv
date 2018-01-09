@@ -20,20 +20,18 @@ public:
     ~MainWindow();
 
 private slots:
-
+    void showScreenshotImage(QImage &src);
+    void showScreenshotImage(cv::Mat &src);
     void on_sliderCannyThreshold1_valueChanged(int value);
     void on_cannyThreshold2Slider_valueChanged(int value);
-    void receiveDistance(double receiveData);
 
     void on_pushButtonJump_clicked();
-
     void on_pushButtonFindAdb_clicked();
     void on_pushButtonGetScreenshotImage_clicked();
-
     void on_pushButtonRefreshAdb_clicked();
 
 private:
-    void showScreenshotImage(QImage &src);
+
     void showImage();
     void initializeAdbServer();
     Ui::MainWindow *ui;

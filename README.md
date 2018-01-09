@@ -15,37 +15,43 @@ Click Get Window and move your mouse to point the target window, press S to stop
 ![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme.jpg)
 ## Change Log: ##
 
-- 2018.1.7:     
+- 2018.01.09:     
+ 
+Set `ImageWidget` and `mat_qimage_convert` to submodule.     
+
+将 `ImageWidget` 和 `mat_qimage_convert` 设置为子模块。
+
+- 2018.01.07:     
 
 Optimized get screenshot function. Now it only needs one adb command instead of two adb commands to get screenshot. It uses `adb shell screencap -p`  to get PNG image stdout and then catch the stdout, convert the binary data to QImage or Mat. It will not create image files in the phone or the PC disk (maybe create image files in the phone, but I can't find it), reduce I/O operation. And now it will takes 900ms to get screenshot in the PC memory, the last version will take 2000ms.
 
 优化了获取手机截图的方式，由原来的执行两条Adb命令（截图到手机和从手机获取图片到本地磁盘）,改为只执行一条Adb命令，获取adb shell screencap -p 命令的stdout输出，转化为QImage或Mat，不再本地磁盘生成图片文件，减少I/O。获取同样的截屏，由原来的2000ms左右减少到900ms左右。
 
-- 2018.1.5 #2:     
+- 2018.01.05 #2:     
 
 Used Adb to control the phone, the screenshot was obtained by the third-party software, because the screenshot from Adb is original image (5.8Mb). Fixed bugs when get the window title. 
 
 改为用Adb去控制手机，屏幕图像还是用第三方软件获取，因为Adb获取的截图是没有压缩的，一张截图5M。修复了获取窗口标题的错误。
 
-- 2018.1.5 #1:
+- 2018.01.05 #1:
 
 It's not a good idea to control and get screen image by the third-party software, I should use Adb to do that. Rewriting...
 
 用第三方软件获取手机屏幕图像和操控手机不如自己调用Adb，推倒重写。
 
-- 2018.1.4 #2:     
+- 2018.01.04 #2:     
 
 Rewrote get window handle funciton and now you can get the window handle and name by moving your mouse to point the window.     
 
 重写了获取窗口句柄部分，改为获取鼠标所指窗口的句柄和名称。     
 
-- 2018.1.4 #1:        
+- 2018.01.04 #1:        
    
 Prepare to rebuild. The way to get HWND is too stupid.     
 
 准备推倒重做，获取目标窗口的方式太煞笔。     
 
-- 2018.1.3:      
+- 2018.01.03:      
 
 Finished basic function.(Just add distance measurement function in ImageWidget class)
 
