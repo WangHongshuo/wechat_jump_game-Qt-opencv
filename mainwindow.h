@@ -30,6 +30,8 @@ private slots:
     void on_pushButtonGetScreenshotImage_clicked();
     void on_pushButtonRefreshAdb_clicked();
 
+    void on_pushButtonTest_clicked();
+
 private:
 
     void showImage();

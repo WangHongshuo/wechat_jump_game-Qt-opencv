@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>807</width>
-    <height>716</height>
+    <width>710</width>
+    <height>717</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
    <widget class="QSlider" name="cannyThreshold2Slider">
     <property name="geometry">
      <rect>
-      <x>740</x>
+      <x>640</x>
       <y>150</y>
       <width>22</width>
       <height>160</height>
@@ -43,7 +43,7 @@
    <widget class="QSlider" name="sliderCannyThreshold1">
     <property name="geometry">
      <rect>
-      <x>690</x>
+      <x>590</x>
       <y>150</y>
       <width>22</width>
       <height>160</height>
@@ -59,7 +59,7 @@
    <widget class="QSpinBox" name="spinBoxCannyThreshold1">
     <property name="geometry">
      <rect>
-      <x>680</x>
+      <x>580</x>
       <y>320</y>
       <width>42</width>
       <height>22</height>
@@ -72,7 +72,7 @@
    <widget class="QSpinBox" name="cannyThreshold2SpinBox">
     <property name="geometry">
      <rect>
-      <x>740</x>
+      <x>640</x>
       <y>320</y>
       <width>42</width>
       <height>22</height>
@@ -85,7 +85,7 @@
    <widget class="QPushButton" name="pushButtonJump">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>440</x>
       <y>230</y>
       <width>75</width>
       <height>23</height>
@@ -101,7 +101,7 @@
    <widget class="QLineEdit" name="lineEditDistanceParameter">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>430</x>
       <y>270</y>
       <width>113</width>
       <height>20</height>
@@ -111,7 +111,7 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>561</x>
+      <x>461</x>
       <y>71</y>
       <width>161</width>
       <height>50</height>
@@ -246,7 +246,7 @@
    <widget class="QPushButton" name="pushButtonFindAdb">
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>490</x>
       <y>440</y>
       <width>101</width>
       <height>23</height>
@@ -259,7 +259,7 @@
    <widget class="QLineEdit" name="lineEditAdbState">
     <property name="geometry">
      <rect>
-      <x>476</x>
+      <x>376</x>
       <y>400</y>
       <width>311</width>
       <height>20</height>
@@ -275,7 +275,7 @@
    <widget class="QPushButton" name="pushButtonGetScreenshotImage">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>600</x>
       <y>440</y>
       <width>101</width>
       <height>23</height>
@@ -288,7 +288,7 @@
    <widget class="QPushButton" name="pushButtonRefreshAdb">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>370</x>
       <y>440</y>
       <width>101</width>
       <height>23</height>
@@ -298,13 +298,26 @@
      <string>Refresh Adb</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButtonTest">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>540</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Test</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>807</width>
+     <width>710</width>
      <height>25</height>
     </rect>
    </property>

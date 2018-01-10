@@ -14,11 +14,13 @@ public:
     void update();
     double cannyThreshold1 = 127.0;
     double cannyThreshold2 = 255.0;
+    bool isLoadInputImage();
 
 private:
     void mainTask();
     void getEdge(cv::Mat &src,cv::Mat &dst, double threshold1, double threshold2);
     cv::Mat inputImage;
+    bool isLoadImage = false;
 
 };
 

@@ -92,7 +92,7 @@ void MainWindow::initializeAdbServer()
 
 void MainWindow::on_sliderCannyThreshold1_valueChanged(int value)
 {
-    if(isGetImage)
+    if(jumpGame.isLoadInputImage())
     {
         jumpGame.cannyThreshold1 = value;
         jumpGame.update();
@@ -102,7 +102,7 @@ void MainWindow::on_sliderCannyThreshold1_valueChanged(int value)
 
 void MainWindow::on_cannyThreshold2Slider_valueChanged(int value)
 {
-    if(isGetImage)
+    if(jumpGame.isLoadInputImage())
     {
         jumpGame.cannyThreshold2 = value;
         jumpGame.update();
@@ -185,4 +185,23 @@ void MainWindow::on_pushButtonGetScreenshotImage_clicked()
 void MainWindow::on_pushButtonRefreshAdb_clicked()
 {
     initializeAdbServer();
+}
+
+void MainWindow::on_pushButtonTest_clicked()
+{
+    QString filePath = QFileDialog::getOpenFileName(this,tr("open image"),
+                                                    "F:/1/",
+                                                    tr("Image File(*.bmp *.jpg *.png"));
+    if(filePath.isEmpty() | filePath.isNull())
+        qDebug() << "filePath error!";
+    else
+        qImageScreenShot.load(filePath);
+    if(qImageScreenShot.isNull())
+        qDebug() << "image load fail!";
+    else
+    {
+        matScreenShot = QImage2Mat_with_data(qImageScreenShot);
+        jumpGame.setImage(matScreenShot);
+        showImage();
+    }
 }
