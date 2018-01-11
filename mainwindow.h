@@ -32,6 +32,8 @@ private slots:
 
     void on_pushButtonTest_clicked();
 
+    void on_pushButtonLoadTemplate_clicked();
+
 private:
 
     void showImage();
@@ -39,6 +41,8 @@ private:
     Ui::MainWindow *ui;
     QImage qImageScreenShot;
     cv::Mat matScreenShot;
+    QImage qImageTemplate;
+    cv::Mat matTemplate;
     JumpJump jumpGame;
     bool isGetImage = false;
     double distance = 0.0;

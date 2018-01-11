@@ -29,6 +29,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->widgetShowImage->set_disable_drag_image(true);
     ui->widgetShowImage->set_disable_zoom_image(true);
+    ui->widgetShowTemplate->only_show_image(true);
+
+    qImageTemplate.load(QCoreApplication::applicationDirPath()+"/template.png");
+    if(qImageTemplate.isNull())
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr("Template initialization failed!"));
+        msgBox.exec();
+        on_pushButtonLoadTemplate_clicked();
+    }
+    else
+    {
+        ui->widgetShowTemplate->set_image_with_pointer(&qImageTemplate);
+        matTemplate = QImage2Mat_with_pointer(qImageTemplate);
+    }
 
     initializeAdbServer();
 }
@@ -165,14 +180,14 @@ void MainWindow::on_pushButtonGetScreenshotImage_clicked()
         // to Mat
         std::vector<uchar> buffer(data.begin(),data.end());
         matScreenShot = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
-//        qImageScreenShot = Mat2QImage_with_pointer(matScreenShot);
+
         // to QImage
 //        QBuffer buffer(&data);
 //        QImageReader reader(&buffer);
 //        reader.setFormat("PNG");
 //        qImageScreenShot = reader.read();
 
-        if(matScreenShot.data)
+        if(matScreenShot.data )
         {
             isGetImage = true;
             showScreenshotImage(matScreenShot);
@@ -201,7 +216,38 @@ void MainWindow::on_pushButtonTest_clicked()
     else
     {
         matScreenShot = QImage2Mat_with_data(qImageScreenShot);
-        jumpGame.setImage(matScreenShot);
+        jumpGame.setInputImageAndTemplateImage(matScreenShot,matTemplate);
         showImage();
     }
+}
+
+void MainWindow::on_pushButtonLoadTemplate_clicked()
+{
+    QString filePath = QFileDialog::getOpenFileName(this,tr("open image"),
+                                                    QApplication::applicationDirPath(),
+                                                    tr("Image File(*.bmp *.jpg *.png"));
+    if(filePath.isNull() || filePath.isEmpty())
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr("Template load failed!"));
+        msgBox.exec();
+        on_pushButtonLoadTemplate_clicked();
+    }
+    else
+    {
+        qImageTemplate.load(filePath);
+        if(qImageTemplate.isNull())
+        {
+            QMessageBox msgBox;
+            msgBox.setText(tr("Template load failed!"));
+            msgBox.exec();
+            on_pushButtonLoadTemplate_clicked();
+        }
+         else
+        {
+            ui->widgetShowTemplate->set_image_with_pointer(&qImageTemplate);
+            matTemplate = QImage2Mat_with_pointer(qImageTemplate);
+        }
+    }
+
 }
