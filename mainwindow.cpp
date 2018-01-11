@@ -218,6 +218,7 @@ void MainWindow::on_pushButtonTest_clicked()
         matScreenShot = QImage2Mat_with_data(qImageScreenShot);
         jumpGame.setInputImageAndTemplateImage(matScreenShot,matTemplate);
         showImage();
+        qDebug() << jumpGame.manLocationX() << jumpGame.manLocationY();
     }
 }
 

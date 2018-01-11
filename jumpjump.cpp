@@ -50,13 +50,30 @@ bool JumpJump::isLoadInputImage()
     return isLoadImage;
 }
 
+int JumpJump::manLocationX()
+{
+    return  manLocation.x;
+}
+
+int JumpJump::manLocationY()
+{
+    return  manLocation.y;
+}
+
+cv::Point JumpJump::manLocationPoint()
+{
+    return manLocation;
+}
+
 void JumpJump::mainTask()
 {
     outputImage = inputImage;
-    roiImage = outputImage(cv::Rect(int(0.2*inputImageWidth),int(0.3*inputImageHeight),
-                                    int(0.6*inputImageWidth),int(0.4*inputImageHeight)));
+    roiImage = outputImage(cv::Rect(int(0.2*(double)inputImageWidth),int(0.3*(double)inputImageHeight),
+                                    int(0.6*(double)inputImageWidth),int(0.4*(double)inputImageHeight)));
     getEdge(inputImage,edgeImage,cannyThreshold1,cannyThreshold2);
-    findTemplateLocation(roiImage,roiImage,templateImage);
+    findTemplateLocation(roiImage,roiImage,templateImage,manLocation);
+    manLocation.x += int(0.2*(double)inputImageWidth);
+    manLocation.y += int(0.3*(double)inputImageHeight);
 }
 
 void JumpJump::getEdge(cv::Mat &src, cv::Mat &dst, double threshold1, double threshold2)
@@ -66,15 +83,15 @@ void JumpJump::getEdge(cv::Mat &src, cv::Mat &dst, double threshold1, double thr
     cv::Canny(src,dst,threshold1,threshold2);
 }
 
-void JumpJump::findTemplateLocation(cv::Mat &src, cv::Mat &dst, const cv::Mat &target)
+void JumpJump::findTemplateLocation(cv::Mat &src, cv::Mat &dst, const cv::Mat &target, cv::Point &location)
 {
     cv::Mat matchResult;
     cv::matchTemplate(src,target,matchResult,cv::TM_CCORR_NORMED);
     cv::Point maxValueLoaction;
     cv::minMaxLoc(matchResult,NULL,NULL,NULL,&maxValueLoaction);
-    maxValueLoaction.x += int(double(target.rows)/2);
-    maxValueLoaction.y += int(double(target.cols)/2)+
-                          int(double(target.cols)*2.5);
-    cv::circle(dst,maxValueLoaction,2,cv::Scalar(0,255,0),4);
+    maxValueLoaction.x += int(double(target.cols)/2);
+    maxValueLoaction.y += int(double(target.rows)/2);
+    cv::circle(dst,maxValueLoaction,1,cv::Scalar(0,255,0),3);
+    location = maxValueLoaction;
 }
 
