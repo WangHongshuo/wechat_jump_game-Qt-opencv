@@ -65,6 +65,17 @@ cv::Point JumpJump::manLocationPoint()
     return manLocation;
 }
 
+void JumpJump::setLeftClickedPos(int x, int y)
+{
+    if(x >= 0 && y >= 0 && isLoadImage)
+    {
+        leftClickedPosX = x;
+        leftClickedPosY = y;
+        cv::circle(outputImage,cv::Point(leftClickedPosX,leftClickedPosY),2,cv::Scalar(255,0,0),4);
+    }
+
+}
+
 void JumpJump::mainTask()
 {
     outputImage = inputImage;

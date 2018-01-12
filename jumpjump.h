@@ -19,6 +19,7 @@ public:
     int manLocationX();
     int manLocationY();
     cv::Point manLocationPoint();
+    void setLeftClickedPos(int x,int y);
 
 private:
     int inputImageWidth;
@@ -31,6 +32,8 @@ private:
     cv::Mat templateImage;
     cv::Point manLocation;
     bool isLoadImage = false;
+    int leftClickedPosX = -1;
+    int leftClickedPosY = -1;
 
 };
 

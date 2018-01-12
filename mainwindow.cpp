@@ -30,22 +30,23 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->widgetShowImage->setEnableDragImage(false);
     ui->widgetShowImage->setEnableZoomImage(false);
     ui->widgetShowTemplate->setOnlyShowImage(true);
-
-    qImageTemplate.load(QCoreApplication::applicationDirPath()+"/template.png");
-    if(qImageTemplate.isNull())
-    {
-        QMessageBox msgBox;
-        msgBox.setText(tr("Template initialization failed!"));
-        msgBox.exec();
-        on_pushButtonLoadTemplate_clicked();
-    }
-    else
-    {
-        ui->widgetShowTemplate->setImageWithPointer(&qImageTemplate);
-        matTemplate = QImage2Mat_with_pointer(qImageTemplate);
-    }
-
+    ui->widgetShowImage->setEnableSendLeftClickedPosInImage(true);
+    connect(ui->widgetShowImage,SIGNAL(sendLeftClickedPosInImage(int,int)),this,SLOT(receiveWidgetShowImageClickedPosInImage(int,int)));
     initializeAdbServer();
+
+//    qImageTemplate.load(QCoreApplication::applicationDirPath()+"/template.png");
+//    if(qImageTemplate.isNull())
+//    {
+//        QMessageBox msgBox;
+//        msgBox.setText(tr("Template initialization failed!"));
+//        msgBox.exec();
+//        on_pushButtonLoadTemplate_clicked();
+//    }
+//    else
+//    {
+//        ui->widgetShowTemplate->setImageWithPointer(&qImageTemplate);
+//        matTemplate = QImage2Mat_with_pointer(qImageTemplate);
+//    }
 }
 
 MainWindow::~MainWindow()
@@ -66,8 +67,11 @@ void MainWindow::showScreenshotImage(cv::Mat &src)
 
 void MainWindow::showImage()
 {
-    qImageScreenShot = Mat2QImage_with_pointer(jumpGame.outputImage);
-    ui->widgetShowImage->setImageWithPointer(&qImageScreenShot);
+    if(jumpGame.isLoadInputImage())
+    {
+        qImageScreenShot = Mat2QImage_with_pointer(jumpGame.outputImage);
+        ui->widgetShowImage->setImageWithPointer(&qImageScreenShot);
+    }
 }
 
 void MainWindow::initializeAdbServer()
@@ -123,6 +127,12 @@ void MainWindow::on_cannyThreshold2Slider_valueChanged(int value)
         jumpGame.update();
         showImage();
     }
+}
+
+void MainWindow::receiveWidgetShowImageClickedPosInImage(int x, int y)
+{
+    jumpGame.setLeftClickedPos(x,y);
+    showImage();
 }
 
 void MainWindow::on_pushButtonJump_clicked()

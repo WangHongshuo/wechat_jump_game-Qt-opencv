@@ -24,7 +24,7 @@ private slots:
     void showScreenshotImage(cv::Mat &src);
     void on_sliderCannyThreshold1_valueChanged(int value);
     void on_cannyThreshold2Slider_valueChanged(int value);
-
+    void receiveWidgetShowImageClickedPosInImage(int x,int y);
     void on_pushButtonJump_clicked();
     void on_pushButtonFindAdb_clicked();
     void on_pushButtonGetScreenshotImage_clicked();
