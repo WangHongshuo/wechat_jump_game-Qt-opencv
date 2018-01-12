@@ -27,9 +27,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEditDistanceParameter->setValidator(pReg);
     ui->lineEditDistanceParameter->setText(QString::number(distanceParameter));
 
-    ui->widgetShowImage->set_disable_drag_image(true);
-    ui->widgetShowImage->set_disable_zoom_image(true);
-    ui->widgetShowTemplate->only_show_image(true);
+    ui->widgetShowImage->setEnableDragImage(false);
+    ui->widgetShowImage->setEnableZoomImage(false);
+    ui->widgetShowTemplate->setOnlyShowImage(true);
 
     qImageTemplate.load(QCoreApplication::applicationDirPath()+"/template.png");
     if(qImageTemplate.isNull())
@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     else
     {
-        ui->widgetShowTemplate->set_image_with_pointer(&qImageTemplate);
+        ui->widgetShowTemplate->setImageWithPointer(&qImageTemplate);
         matTemplate = QImage2Mat_with_pointer(qImageTemplate);
     }
 
@@ -55,19 +55,19 @@ MainWindow::~MainWindow()
 
 void MainWindow::showScreenshotImage(QImage &src)
 {
-    ui->widgetShowImage->set_image_with_pointer(&src);
+    ui->widgetShowImage->setImageWithPointer(&src);
 }
 
 void MainWindow::showScreenshotImage(cv::Mat &src)
 {
     qImageScreenShot = Mat2QImage_with_pointer(src);
-    ui->widgetShowImage->set_image_with_pointer(&qImageScreenShot);
+    ui->widgetShowImage->setImageWithPointer(&qImageScreenShot);
 }
 
 void MainWindow::showImage()
 {
     qImageScreenShot = Mat2QImage_with_pointer(jumpGame.outputImage);
-    ui->widgetShowImage->set_image_with_pointer(&qImageScreenShot);
+    ui->widgetShowImage->setImageWithPointer(&qImageScreenShot);
 }
 
 void MainWindow::initializeAdbServer()
@@ -218,7 +218,6 @@ void MainWindow::on_pushButtonTest_clicked()
         matScreenShot = QImage2Mat_with_data(qImageScreenShot);
         jumpGame.setInputImageAndTemplateImage(matScreenShot,matTemplate);
         showImage();
-        qDebug() << jumpGame.manLocationX() << jumpGame.manLocationY();
     }
 }
 
@@ -246,7 +245,7 @@ void MainWindow::on_pushButtonLoadTemplate_clicked()
         }
          else
         {
-            ui->widgetShowTemplate->set_image_with_pointer(&qImageTemplate);
+            ui->widgetShowTemplate->setImageWithPointer(&qImageTemplate);
             matTemplate = QImage2Mat_with_pointer(qImageTemplate);
         }
     }

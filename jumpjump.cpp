@@ -90,8 +90,9 @@ void JumpJump::findTemplateLocation(cv::Mat &src, cv::Mat &dst, const cv::Mat &t
     cv::Point maxValueLoaction;
     cv::minMaxLoc(matchResult,NULL,NULL,NULL,&maxValueLoaction);
     maxValueLoaction.x += int(double(target.cols)/2);
-    maxValueLoaction.y += int(double(target.rows)/2);
-    cv::circle(dst,maxValueLoaction,1,cv::Scalar(0,255,0),3);
+    maxValueLoaction.y += int(double(target.rows)/2)+
+                          int(double(target.rows)*2.6);
+    cv::circle(dst,maxValueLoaction,2,cv::Scalar(0,255,0),4);
     location = maxValueLoaction;
 }
 
