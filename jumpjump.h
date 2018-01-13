@@ -9,7 +9,8 @@ class JumpJump
 public:
     JumpJump();
     ~JumpJump();
-    void setInputImageAndTemplateImage(cv::Mat &inputMat, cv::Mat &templateMat);
+    void setInputImage(cv::Mat &inputMat);
+    void setTemplateImage(cv::Mat &templateImg);
     cv::Mat edgeImage;
     cv::Mat outputImage;
     void update();
@@ -20,6 +21,7 @@ public:
     int manLocationY();
     cv::Point manLocationPoint();
     void setLeftClickedPos(int x,int y);
+    double distance = -1.0;
 
 private:
     int inputImageWidth;
@@ -30,8 +32,12 @@ private:
     cv::Mat inputImage;
     cv::Mat roiImage;
     cv::Mat templateImage;
+    cv::Mat copyOfDrawPointArea;
+    int lastAreaX1, lastAreaX2, lastAreaY1, lastAreaY2;
     cv::Point manLocation;
     bool isLoadImage = false;
+    bool isLoadTemplateImage = false;
+    bool isDrawPointAreaCopied = false;
     int leftClickedPosX = -1;
     int leftClickedPosY = -1;
 

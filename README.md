@@ -1,5 +1,6 @@
-# wechat jump game tool
-- This project based on Qt, opencv and window api.
+# Wechat Jump Game Tool
+- This project based on Qt and opencv.
+- This project only tested on Xiaomi4 phone and the screenshot size is 1920*1080.
 ## Introduction: ##
 
 This game is very hot and I try my best to make a tool with the help of other's idea, but it's still hard for me to do this.      
@@ -8,18 +9,35 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 这个东西最近好火，跟着别人的思路用C++试了试，感觉好难。       
 目前只完成了调系数和手动测距功能，距离和鼠标按下时间的关系可能没那么简单，和手机分辨率也有关系。有时间试下能不能自动化。
 
-Click Get Window and move your mouse to point the target window, press S to stop finding window handle when get target window handle.     
+## How to use: ##
 
-点击Get Window将鼠标指向目标窗口，获取目标窗口的图像和句柄后按S键停止寻找鼠标所指窗口句柄。           
+1. Turn on USB debugging and allow simulating input via USB debugging.
+1. Connect to PC, open this program and make sure the Adb status is Find: XXXX(Your device name).
+1. Open the Jump Game, click Get Screenshot (shortcut key G) and mark the point in screenshot, fix jump parameter, click Jump (shortcut key J).
+1. Get the screenshot manually when the game screen is stable, mark the point and jump.       
+>          
+
+1. 打开手机USB调试并允许通过USB调试修改权限或模拟点击。           
+2. 连接电脑，打开程序并确定Adb状态为Find: XXXX(设备名称）。     
+3. 打开游戏界面，手动Get Screenshot（快捷键G）和在图上标点，调整弹跳系数，点击Jump(快捷键J)。      
+4. 稳定后再手动获取截图标点弹跳。      
+                
 ## Screenshot: ##
-![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme.jpg)
+![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme.jpg)      
+![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme2.jpg)    
 ## Change Log: ##
+
+- 2018.01.13:
+
+Finished rewriting this. And now it can locate the position of man, but the position is not always right. This version is more accurate than the last one at least.      
+  
+完成了重写，可以定位小人，有时会不准，但比上一版本要精确。            
 
 - 2018.01.09:     
  
-Set `ImageWidget` and `mat_qimage_convert` to submodule.     
-
-将 `ImageWidget` 和 `mat_qimage_convert` 设置为子模块。
+Set `ImageWidget` and `mat_qimage_convert` to submodule.        
+ 
+将 `ImageWidget` 和 `mat_qimage_convert` 设置为子模块。       
 
 - 2018.01.07:     
 

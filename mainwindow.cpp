@@ -34,19 +34,20 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->widgetShowImage,SIGNAL(sendLeftClickedPosInImage(int,int)),this,SLOT(receiveWidgetShowImageClickedPosInImage(int,int)));
     initializeAdbServer();
 
-//    qImageTemplate.load(QCoreApplication::applicationDirPath()+"/template.png");
-//    if(qImageTemplate.isNull())
-//    {
-//        QMessageBox msgBox;
-//        msgBox.setText(tr("Template initialization failed!"));
-//        msgBox.exec();
-//        on_pushButtonLoadTemplate_clicked();
-//    }
-//    else
-//    {
-//        ui->widgetShowTemplate->setImageWithPointer(&qImageTemplate);
-//        matTemplate = QImage2Mat_with_pointer(qImageTemplate);
-//    }
+    qImageTemplate.load(QCoreApplication::applicationDirPath()+"/template.png");
+    if(qImageTemplate.isNull())
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr("Template initialization failed!"));
+        msgBox.exec();
+        on_pushButtonLoadTemplate_clicked();
+    }
+    else
+    {
+        ui->widgetShowTemplate->setImageWithPointer(&qImageTemplate);
+        matTemplate = QImage2Mat_with_pointer(qImageTemplate);
+        jumpGame.setTemplateImage(matTemplate);
+    }
 }
 
 MainWindow::~MainWindow()
@@ -54,22 +55,17 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::showScreenshotImage(QImage &src)
+void MainWindow::showImage(QImage &src)
 {
-    ui->widgetShowImage->setImageWithPointer(&src);
+    if(!src.isNull())
+        ui->widgetShowImage->setImageWithPointer(&src);
 }
 
-void MainWindow::showScreenshotImage(cv::Mat &src)
+void MainWindow::showImage(cv::Mat &src)
 {
-    qImageScreenShot = Mat2QImage_with_pointer(src);
-    ui->widgetShowImage->setImageWithPointer(&qImageScreenShot);
-}
-
-void MainWindow::showImage()
-{
-    if(jumpGame.isLoadInputImage())
+    if(src.data)
     {
-        qImageScreenShot = Mat2QImage_with_pointer(jumpGame.outputImage);
+        qImageScreenShot = Mat2QImage_with_data(src);
         ui->widgetShowImage->setImageWithPointer(&qImageScreenShot);
     }
 }
@@ -115,7 +111,7 @@ void MainWindow::on_sliderCannyThreshold1_valueChanged(int value)
     {
         jumpGame.cannyThreshold1 = value;
         jumpGame.update();
-        showImage();
+        showImage(jumpGame.edgeImage);
     }
 }
 
@@ -125,14 +121,17 @@ void MainWindow::on_cannyThreshold2Slider_valueChanged(int value)
     {
         jumpGame.cannyThreshold2 = value;
         jumpGame.update();
-        showImage();
+        showImage(jumpGame.edgeImage);
     }
 }
 
 void MainWindow::receiveWidgetShowImageClickedPosInImage(int x, int y)
 {
     jumpGame.setLeftClickedPos(x,y);
-    showImage();
+    showImage(jumpGame.outputImage);
+    ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
+    ui->labelX2Y2->setText(QString::number(x)+" , "+QString::number(y));
+    ui->labelDistance->setText(QString::number(jumpGame.distance));
 }
 
 void MainWindow::on_pushButtonJump_clicked()
@@ -147,8 +146,8 @@ void MainWindow::on_pushButtonJump_clicked()
     {
         distanceParameter = ui->lineEditDistanceParameter->text().toDouble();
         QString cmd = adbFilePath + " shell input swipe 200 200 200 200 " +
-                QString::number(int(distanceParameter*distance));
-//        qDebug() << cmd;
+                QString::number(int(distanceParameter*jumpGame.distance));
+        qDebug() << cmd;
         adbProcess.start(cmd);
     }
 }
@@ -175,7 +174,7 @@ void MainWindow::on_pushButtonGetScreenshotImage_clicked()
     else
     {
         QString cmd = adbFilePath + " shell screencap -p";
-        qDebug() << cmd;
+//        qDebug() << cmd;
         adbProcess.setProcessChannelMode(QProcess::MergedChannels);
         // it takes too much time
         adbProcess.start(cmd);
@@ -200,7 +199,9 @@ void MainWindow::on_pushButtonGetScreenshotImage_clicked()
         if(matScreenShot.data )
         {
             isGetImage = true;
-            showScreenshotImage(matScreenShot);
+            qDebug() << "1";
+            jumpGame.setInputImage(matScreenShot);
+            showImage(jumpGame.outputImage);
         }
         else
             isGetImage = false;
@@ -226,8 +227,8 @@ void MainWindow::on_pushButtonTest_clicked()
     else
     {
         matScreenShot = QImage2Mat_with_data(qImageScreenShot);
-        jumpGame.setInputImageAndTemplateImage(matScreenShot,matTemplate);
-        showImage();
+        jumpGame.setInputImage(matScreenShot);
+        showImage(jumpGame.outputImage);
     }
 }
 
@@ -257,6 +258,7 @@ void MainWindow::on_pushButtonLoadTemplate_clicked()
         {
             ui->widgetShowTemplate->setImageWithPointer(&qImageTemplate);
             matTemplate = QImage2Mat_with_pointer(qImageTemplate);
+            jumpGame.setTemplateImage(matTemplate);
         }
     }
 

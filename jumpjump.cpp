@@ -16,26 +16,32 @@ JumpJump::~JumpJump()
 
 }
 
-void JumpJump::setInputImageAndTemplateImage(cv::Mat &inputMat, cv::Mat &templateMat)
+void JumpJump::setInputImage(cv::Mat &inputMat)
 {
-    if(inputMat.data && templateMat.data)
+    if(inputMat.data && isLoadTemplateImage)
     {
         if(inputMat.channels() == 4)
             cv::cvtColor(inputMat,inputImage,CV_RGBA2RGB);
         else
             inputImage = inputMat.clone();
-        if(templateMat.channels() == 4)
-            cv::cvtColor(templateMat,templateImage,CV_RGBA2RGB);
-        else
-            templateImage = templateMat.clone();
         isLoadImage = true;
         inputImageWidth = inputImage.cols;
         inputImageHeight = inputImage.rows;
+        isDrawPointAreaCopied = false;
         mainTask();
 
     }
     else
         isLoadImage = false;
+}
+
+void JumpJump::setTemplateImage(cv::Mat &templateImg)
+{
+    if(templateImg.channels() == 4)
+        cv::cvtColor(templateImg,templateImage,CV_RGBA2RGB);
+    else
+        templateImage = templateImg.clone();
+    isLoadTemplateImage = true;
 }
 
 
@@ -71,7 +77,41 @@ void JumpJump::setLeftClickedPos(int x, int y)
     {
         leftClickedPosX = x;
         leftClickedPosY = y;
-        cv::circle(outputImage,cv::Point(leftClickedPosX,leftClickedPosY),2,cv::Scalar(255,0,0),4);
+        // 修正要拷贝的画图区域
+        int x1,y1,x2,y2;
+        x1 = std::min(x,manLocationX())-3;
+        y1 = std::min(y,manLocationY())-3;
+        x2 = std::max(x,manLocationX())+3;
+        y2 = std::max(y,manLocationY())+3;
+        if(x1 < 0)
+            x1 = 0;
+        if(y1 < 0)
+            y1 = 0;
+        if(x2 > inputImage.cols)
+            x2 = inputImage.cols;
+        if(y2 > inputImage.rows)
+            y2 = inputImage.rows;
+
+        if(!isDrawPointAreaCopied)
+        {
+            cv::Mat roiTemp = outputImage(cv::Rect(x1,y1,x2-x1+1,y2-y1+1));
+            copyOfDrawPointArea = roiTemp.clone();
+            isDrawPointAreaCopied = true;
+        }
+        else
+        {
+            cv::Mat roiTemp = outputImage(cv::Rect(lastAreaX1,lastAreaY1,lastAreaX2-lastAreaX1+1,lastAreaY2-lastAreaY1+1));
+            copyOfDrawPointArea.copyTo(roiTemp);
+            roiTemp = outputImage(cv::Rect(x1,y1,x2-x1+1,y2-y1+1));
+            copyOfDrawPointArea = roiTemp.clone();
+        }
+        cv::line(outputImage,cv::Point(x,y),manLocationPoint(),cv::Scalar(0,0,255),2);
+        cv::circle(outputImage,cv::Point(leftClickedPosX,leftClickedPosY),2,cv::Scalar(255,0,0),CV_FILLED);
+        lastAreaX1 = x1;
+        lastAreaY1 = y1;
+        lastAreaX2 = x2;
+        lastAreaY2 = y2;
+        distance = std::sqrt(double(std::pow(x-manLocationX(),2)+std::pow(y-manLocationY(),2)));
     }
 
 }
@@ -102,8 +142,9 @@ void JumpJump::findTemplateLocation(cv::Mat &src, cv::Mat &dst, const cv::Mat &t
     cv::minMaxLoc(matchResult,NULL,NULL,NULL,&maxValueLoaction);
     maxValueLoaction.x += int(double(target.cols)/2);
     maxValueLoaction.y += int(double(target.rows)/2)+
-                          int(double(target.rows)*2.6);
-    cv::circle(dst,maxValueLoaction,2,cv::Scalar(0,255,0),4);
+                          int(double(target.rows)*0.45);
+    cv::circle(dst,maxValueLoaction,3,cv::Scalar(0,255,0),CV_FILLED);
     location = maxValueLoaction;
+    qDebug() << location.x << location.y;
 }
 

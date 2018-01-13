@@ -20,8 +20,8 @@ public:
     ~MainWindow();
 
 private slots:
-    void showScreenshotImage(QImage &src);
-    void showScreenshotImage(cv::Mat &src);
+    void showImage(QImage &src);
+    void showImage(cv::Mat &src);
     void on_sliderCannyThreshold1_valueChanged(int value);
     void on_cannyThreshold2Slider_valueChanged(int value);
     void receiveWidgetShowImageClickedPosInImage(int x,int y);
@@ -45,9 +45,8 @@ private:
     cv::Mat matTemplate;
     JumpJump jumpGame;
     bool isGetImage = false;
-    double distance = 0.0;
 
-    double distanceParameter = 4.0;
+    double distanceParameter = 1.5;
 
     QProcess adbProcess;
     QString adbFilePath;
