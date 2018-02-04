@@ -29,7 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->widgetShowImage->setEnableDragImage(false);
     ui->widgetShowImage->setEnableZoomImage(false);
-    ui->widgetShowTemplate->setOnlyShowImage(true);
+    ui->widgetShowImage->setEnableRecordLastParameters(true);
+    ui->widgetShowTemplate->setEnableOnlyShowImage(true);
     ui->widgetShowImage->setEnableSendLeftClickedPosInImage(true);
     connect(ui->widgetShowImage,SIGNAL(sendLeftClickedPosInImage(int,int)),this,SLOT(receiveWidgetShowImageClickedPosInImage(int,int)));
     initializeAdbServer();
@@ -216,7 +217,7 @@ void MainWindow::on_pushButtonRefreshAdb_clicked()
 void MainWindow::on_pushButtonTest_clicked()
 {
     QString filePath = QFileDialog::getOpenFileName(this,tr("open image"),
-                                                    "F:/1/",
+                                                    " ",
                                                     tr("Image File(*.bmp *.jpg *.png"));
     if(filePath.isEmpty() | filePath.isNull())
         qDebug() << "filePath error!";

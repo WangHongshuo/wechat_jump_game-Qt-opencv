@@ -119,11 +119,11 @@ void JumpJump::setLeftClickedPos(int x, int y)
 void JumpJump::mainTask()
 {
     outputImage = inputImage;
-    roiImage = outputImage(cv::Rect(int(0.2*(double)inputImageWidth),int(0.3*(double)inputImageHeight),
-                                    int(0.6*(double)inputImageWidth),int(0.4*(double)inputImageHeight)));
+    roiImage = outputImage(cv::Rect((0),int(0.3*(double)inputImageHeight),
+                                    (inputImageWidth),int(0.4*(double)inputImageHeight)));
     getEdge(inputImage,edgeImage,cannyThreshold1,cannyThreshold2);
     findTemplateLocation(roiImage,roiImage,templateImage,manLocation);
-    manLocation.x += int(0.2*(double)inputImageWidth);
+    manLocation.x += int(0);
     manLocation.y += int(0.3*(double)inputImageHeight);
 }
 
