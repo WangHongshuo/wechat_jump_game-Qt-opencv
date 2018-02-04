@@ -27,6 +27,12 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 ![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme2.jpg)    
 ## Change Log: ##
 
+- 2018.02.04:
+
+Added detect target block corners function and fixed the problem in locating the man in the last version.
+
+添加检测目标方块角点的功能,并修复了上一版本小人定位不准的问题。
+
 - 2018.01.13:
 
 Finished rewriting this. And now it can locate the position of man, but the position is not always right. This version is more accurate than the last one at least.      

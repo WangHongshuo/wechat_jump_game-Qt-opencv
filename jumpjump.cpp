@@ -58,17 +58,17 @@ bool JumpJump::isLoadInputImage()
 
 int JumpJump::manLocationX()
 {
-    return  manLocation.x;
+    return  manPos.x;
 }
 
 int JumpJump::manLocationY()
 {
-    return  manLocation.y;
+    return  manPos.y;
 }
 
 cv::Point JumpJump::manLocationPoint()
 {
-    return manLocation;
+    return manPos;
 }
 
 void JumpJump::setLeftClickedPos(int x, int y)
@@ -118,13 +118,20 @@ void JumpJump::setLeftClickedPos(int x, int y)
 
 void JumpJump::mainTask()
 {
-    outputImage = inputImage;
+    outputImage = inputImage.clone();
     roiImage = outputImage(cv::Rect((0),int(0.3*(double)inputImageHeight),
                                     (inputImageWidth),int(0.4*(double)inputImageHeight)));
-    getEdge(inputImage,edgeImage,cannyThreshold1,cannyThreshold2);
-    findTemplateLocation(roiImage,roiImage,templateImage,manLocation);
-    manLocation.x += int(0);
-    manLocation.y += int(0.3*(double)inputImageHeight);
+    getEdge(roiImage,edgeImage,cannyThreshold1,cannyThreshold2);
+    getTemplatePos(roiImage,templateImage,manPos);
+    getTargetRectCornerPos(edgeImage,rectTopCornerPos,rectLeftCornerPos,rectRightCornerPos);
+
+    // ÐÞÕýµã
+    rectTopCornerPos += cv::Point(0, int(0.3*(double)inputImageHeight));
+    rectLeftCornerPos += cv::Point(0, int(0.3*(double)inputImageHeight));
+    rectRightCornerPos += cv::Point(0, int(0.3*(double)inputImageHeight));
+    manPos += cv::Point(0,int(0.3*(double)inputImageHeight));
+
+    drawAllPoints();
 }
 
 void JumpJump::getEdge(cv::Mat &src, cv::Mat &dst, double threshold1, double threshold2)
@@ -134,7 +141,7 @@ void JumpJump::getEdge(cv::Mat &src, cv::Mat &dst, double threshold1, double thr
     cv::Canny(src,dst,threshold1,threshold2);
 }
 
-void JumpJump::findTemplateLocation(cv::Mat &src, cv::Mat &dst, const cv::Mat &target, cv::Point &location)
+void JumpJump::getTemplatePos(const cv::Mat &src, const cv::Mat &target, cv::Point &location)
 {
     cv::Mat matchResult;
     cv::matchTemplate(src,target,matchResult,cv::TM_CCORR_NORMED);
@@ -143,8 +150,74 @@ void JumpJump::findTemplateLocation(cv::Mat &src, cv::Mat &dst, const cv::Mat &t
     maxValueLoaction.x += int(double(target.cols)/2);
     maxValueLoaction.y += int(double(target.rows)/2)+
                           int(double(target.rows)*0.45);
-    cv::circle(dst,maxValueLoaction,3,cv::Scalar(0,255,0),CV_FILLED);
     location = maxValueLoaction;
-    qDebug() << location.x << location.y;
+}
+
+void JumpJump::drawAllPoints()
+{
+    cv::circle(outputImage,manLocationPoint(),4,cv::Scalar(0,255,0),CV_FILLED);
+
+    cv::circle(outputImage,rectRightCornerPos,4,cv::Scalar(0,0,255),CV_FILLED);
+    cv::circle(outputImage,rectLeftCornerPos,4,cv::Scalar(0,0,255),CV_FILLED);
+    cv::circle(outputImage,rectTopCornerPos,4,cv::Scalar(0,0,255),CV_FILLED);
+}
+
+void JumpJump::getTargetRectCornerPos(const cv::Mat &edgeImage, cv::Point &topCorner, cv::Point &leftCorner, cv::Point &rightCorner)
+{
+    bool flag = false;
+    for (int i = 0; i < edgeImage.rows; i++)
+    {
+        for (int j = 0; j < edgeImage.cols; j++)
+        {
+            if (edgeImage.ptr<uchar>(i)[j] == 255)
+            {
+                topCorner = cv::Point(j, i);
+                flag = true;
+                break;
+            }
+        }
+        if (flag)
+            break;
+    }
+
+    leftCorner = topCorner;
+    rightCorner = topCorner;
+    flag = true;
+    do
+    {
+        if (edgeImage.ptr<uchar>(leftCorner.y + 1)[leftCorner.x - 1] == 255)
+        {
+            leftCorner += cv::Point(-1, 1);
+            continue;
+        }
+        else if (edgeImage.ptr<uchar>(leftCorner.y)[leftCorner.x - 1] == 255)
+        {
+            leftCorner += cv::Point(-1, 0);
+            continue;
+        }
+        else
+        {
+            flag = false;
+        }
+    } while (flag);
+
+    flag = true;
+    do
+    {
+        if (edgeImage.ptr<uchar>(rightCorner.y + 1)[rightCorner.x + 1] == 255)
+        {
+            rightCorner += cv::Point(1, 1);
+            continue;
+        }
+        else if (edgeImage.ptr<uchar>(rightCorner.y)[rightCorner.x + 1] == 255)
+        {
+            rightCorner += cv::Point(1, 0);
+            continue;
+        }
+        else
+        {
+            flag = false;
+        }
+    } while (flag);
 }
 
