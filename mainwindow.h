@@ -23,21 +23,29 @@ private slots:
     void showImage(QImage &src);
     void showImage(cv::Mat &src);
     void on_sliderCannyThreshold1_valueChanged(int value);
-    void on_cannyThreshold2Slider_valueChanged(int value);
     void receiveWidgetShowImageClickedPosInImage(int x,int y);
+    void timerAuToJumpTimeoutEvent();
     void on_pushButtonJump_clicked();
     void on_pushButtonFindAdb_clicked();
     void on_pushButtonGetScreenshotImage_clicked();
     void on_pushButtonRefreshAdb_clicked();
-
     void on_pushButtonTest_clicked();
-
     void on_pushButtonLoadTemplate_clicked();
+    void on_checkBoxEnableFixCannyT_stateChanged(int arg1);
+    void on_sliderCannyThreshold2_valueChanged(int value);
+    void on_pushButtonUpdateProcessedImage_clicked();
+    void on_radioButtonManualJump_clicked();
+    void on_radioButtonAutoJump_clicked();
+    void on_pushButtonSwitchAutoJump_clicked();
 
 private:
-
     void showImage();
     void initializeAdbServer();
+
+
+    QTimer *timerAuToJump;
+    int timerAuToJumpInterval = 0;
+    int timerAuToJumpDelay = 2500;
     Ui::MainWindow *ui;
     QImage qImageScreenShot;
     cv::Mat matScreenShot;
@@ -45,13 +53,12 @@ private:
     cv::Mat matTemplate;
     JumpJump jumpGame;
     bool isGetImage = false;
-
-    double distanceParameter = 1.5;
+    bool isAutoJump = false;
+    double distanceParameter = 1.35;
 
     QProcess adbProcess;
     QString adbFilePath;
     bool isAdbInitializated = false;
-    WCHAR *windowName = new WCHAR[100];
 };
 
 #endif // MAINWINDOW_H

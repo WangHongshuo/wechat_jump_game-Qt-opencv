@@ -23,9 +23,15 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 4. 稳定后再手动获取截图标点弹跳。      
                 
 ## Screenshot: ##
-![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme.jpg)      
-![](https://github.com/WangHongshuo/wechat_jump_game-Qt-opencv/blob/master/README/readme2.jpg)    
+![](./README/readme.png)      
+![](./README/readme.gif)    
 ## Change Log: ##
+
+- 2018.02.05:
+
+Finished Auto Jump function, but it performed bad. The ui was not designed. 
+
+完成自动跳功能，未优化，有很大概率会跳死，ui未设计。
 
 - 2018.02.04:
 

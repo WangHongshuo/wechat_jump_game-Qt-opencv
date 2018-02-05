@@ -46,6 +46,11 @@ void JumpJump::setTemplateImage(cv::Mat &templateImg)
 
 
 
+void JumpJump::updateEdgeImage()
+{
+    getEdge(roiImage,edgeImage,cannyThreshold1,cannyThreshold2);
+}
+
 void JumpJump::update()
 {
     mainTask();
@@ -56,14 +61,29 @@ bool JumpJump::isLoadInputImage()
     return isLoadImage;
 }
 
-int JumpJump::manLocationX()
+int JumpJump::manLocationX() const
 {
     return  manPos.x;
 }
 
-int JumpJump::manLocationY()
+int JumpJump::manLocationY() const
 {
     return  manPos.y;
+}
+
+int JumpJump::blockLocationX() const
+{
+    return blockCenterPos.x;
+}
+
+int JumpJump::blockLocationY() const
+{
+    return blockCenterPos.y;
+}
+
+double JumpJump::jumpDistance() const
+{
+    return distance;
 }
 
 cv::Point JumpJump::manLocationPoint()
@@ -119,19 +139,21 @@ void JumpJump::setLeftClickedPos(int x, int y)
 void JumpJump::mainTask()
 {
     outputImage = inputImage.clone();
-    roiImage = outputImage(cv::Rect((0),int(0.3*(double)inputImageHeight),
+    roiImage = inputImage(cv::Rect((0),int(0.3*(double)inputImageHeight),
                                     (inputImageWidth),int(0.4*(double)inputImageHeight)));
     getEdge(roiImage,edgeImage,cannyThreshold1,cannyThreshold2);
     getTemplatePos(roiImage,templateImage,manPos);
-    getTargetRectCornerPos(edgeImage,rectTopCornerPos,rectLeftCornerPos,rectRightCornerPos);
-
-    // ÐÞÕýµã
-    rectTopCornerPos += cv::Point(0, int(0.3*(double)inputImageHeight));
-    rectLeftCornerPos += cv::Point(0, int(0.3*(double)inputImageHeight));
-    rectRightCornerPos += cv::Point(0, int(0.3*(double)inputImageHeight));
+    getBlockCornersPos(edgeImage,blockTopCornerPos,blockLeftCornerPos,blockRightCornerPos);
+    getBlockCenterPos(blockTopCornerPos,blockLeftCornerPos,blockRightCornerPos,blockCenterPos);
+    // fix Pos
+    blockTopCornerPos += cv::Point(0, int(0.3*(double)inputImageHeight));
+    blockLeftCornerPos += cv::Point(0, int(0.3*(double)inputImageHeight));
+    blockRightCornerPos += cv::Point(0, int(0.3*(double)inputImageHeight));
+    blockCenterPos += cv::Point(0, int(0.3*(double)inputImageHeight));
     manPos += cv::Point(0,int(0.3*(double)inputImageHeight));
 
     drawAllPoints();
+    setLeftClickedPos(blockCenterPos.x,blockCenterPos.y);
 }
 
 void JumpJump::getEdge(cv::Mat &src, cv::Mat &dst, double threshold1, double threshold2)
@@ -155,14 +177,15 @@ void JumpJump::getTemplatePos(const cv::Mat &src, const cv::Mat &target, cv::Poi
 
 void JumpJump::drawAllPoints()
 {
-    cv::circle(outputImage,manLocationPoint(),4,cv::Scalar(0,255,0),CV_FILLED);
+    cv::circle(outputImage,manPos,6,cv::Scalar(0,255,0),CV_FILLED);
+    cv::circle(outputImage,blockCenterPos,6,cv::Scalar(255,0,0),CV_FILLED);
 
-    cv::circle(outputImage,rectRightCornerPos,4,cv::Scalar(0,0,255),CV_FILLED);
-    cv::circle(outputImage,rectLeftCornerPos,4,cv::Scalar(0,0,255),CV_FILLED);
-    cv::circle(outputImage,rectTopCornerPos,4,cv::Scalar(0,0,255),CV_FILLED);
+    cv::circle(outputImage,blockRightCornerPos,6,cv::Scalar(0,0,255),CV_FILLED);
+    cv::circle(outputImage,blockLeftCornerPos,6,cv::Scalar(0,0,255),CV_FILLED);
+    cv::circle(outputImage,blockTopCornerPos,6,cv::Scalar(0,0,255),CV_FILLED);
 }
 
-void JumpJump::getTargetRectCornerPos(const cv::Mat &edgeImage, cv::Point &topCorner, cv::Point &leftCorner, cv::Point &rightCorner)
+void JumpJump::getBlockCornersPos(const cv::Mat &edgeImage, cv::Point &topCorner, cv::Point &leftCorner, cv::Point &rightCorner)
 {
     bool flag = false;
     for (int i = 0; i < edgeImage.rows; i++)
@@ -219,5 +242,15 @@ void JumpJump::getTargetRectCornerPos(const cv::Mat &edgeImage, cv::Point &topCo
             flag = false;
         }
     } while (flag);
+}
+
+void JumpJump::getBlockCenterPos(const cv::Point &topCorner, const cv::Point &leftCorner, const cv::Point &rightCorner, cv::Point &centerPoint)
+{
+    double x = topCorner.x, y;
+    double x1 = leftCorner.x, y1 = leftCorner.y;
+    double x2 = rightCorner.x, y2 = rightCorner.y;
+    y = (int)(((x-x2)/(x1-x2))*(y1-y2)+y2);
+    centerPoint.x = (int)x;
+    centerPoint.y = (int)y;
 }
 
