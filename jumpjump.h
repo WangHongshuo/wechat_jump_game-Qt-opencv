@@ -33,8 +33,9 @@ public:
 private:
     void mainTask();
     void getEdge(cv::Mat &src,cv::Mat &dst, double threshold1, double threshold2);
-    void getTemplatePos(const cv::Mat &src, const cv::Mat &target, cv::Point &location);
+    void getTemplatePos(cv::Mat &src, const cv::Mat &target, cv::Point &targetLocation, cv::Point &oriTargetLocation);
     void drawAllPoints();
+    void removeManEdge(cv::Mat &edgeImg, const cv::Mat &manImg, const cv::Point &manPos);
     void getBlockCornersPos(const cv::Mat &edgeImage, cv::Point &topCorner, cv::Point &leftCorner, cv::Point &rightCorner);
     void getBlockCenterPos(const cv::Point &topCorner, const cv::Point &leftConer, const cv::Point &rightCorner, cv::Point &centerPoint);
 
@@ -49,6 +50,7 @@ private:
     cv::Mat copyOfDrawPointArea;
     int lastAreaX1, lastAreaX2, lastAreaY1, lastAreaY2;
 
+    cv::Point manPosInRoiEdgeImage;
     cv::Point manPos;
     cv::Point blockLeftCornerPos;
     cv::Point blockTopCornerPos;

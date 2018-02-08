@@ -147,7 +147,8 @@ void JumpJump::mainTask()
     roiImage = inputImage(cv::Rect((0),int(0.3*(double)inputImageHeight),
                                     (inputImageWidth),int(0.4*(double)inputImageHeight)));
     getEdge(roiImage,edgeImage,cannyThreshold1,cannyThreshold2);
-    getTemplatePos(roiImage,templateImage,manPos);
+    getTemplatePos(roiImage,templateImage,manPos,manPosInRoiEdgeImage);
+    removeManEdge(edgeImage,templateImage,manPosInRoiEdgeImage);
     getBlockCornersPos(edgeImage,blockTopCornerPos,blockLeftCornerPos,blockRightCornerPos);
     getBlockCenterPos(blockTopCornerPos,blockLeftCornerPos,blockRightCornerPos,blockCenterPos);
     // fix Pos
@@ -168,16 +169,13 @@ void JumpJump::getEdge(cv::Mat &src, cv::Mat &dst, double threshold1, double thr
     cv::Canny(src,dst,threshold1,threshold2);
 }
 
-void JumpJump::getTemplatePos(const cv::Mat &src, const cv::Mat &target, cv::Point &location)
+void JumpJump::getTemplatePos(cv::Mat &src, const cv::Mat &target, cv::Point &targetLocation, cv::Point &oriTargetLocation)
 {
     cv::Mat matchResult;
     cv::matchTemplate(src,target,matchResult,cv::TM_CCORR_NORMED);
-    cv::Point maxValueLoaction;
-    cv::minMaxLoc(matchResult,NULL,NULL,NULL,&maxValueLoaction);
-    maxValueLoaction.x += int(double(target.cols)/2);
-    maxValueLoaction.y += int(double(target.rows)/2)+
-                          int(double(target.rows)*0.45);
-    location = maxValueLoaction;
+    cv::minMaxLoc(matchResult,NULL,NULL,NULL,&oriTargetLocation);
+    targetLocation = oriTargetLocation+cv::Point(int(double(target.cols)/2),
+                                                 int(double(target.rows)/2)+int(double(target.rows)*0.45));
 }
 
 void JumpJump::drawAllPoints()
@@ -190,22 +188,37 @@ void JumpJump::drawAllPoints()
     cv::circle(outputImage,blockTopCornerPos,6,cv::Scalar(0,0,255),CV_FILLED);
 }
 
+void JumpJump::removeManEdge(cv::Mat &edgeImg, const cv::Mat &manImg, const cv::Point &manPos)
+{
+    cv::rectangle(edgeImg,cv::Rect(manPos.x-1,manPos.y-1,manImg.cols+1,manImg.rows+1),cv::Scalar(0),CV_FILLED);
+}
+
 void JumpJump::getBlockCornersPos(const cv::Mat &edgeImage, cv::Point &topCorner, cv::Point &leftCorner, cv::Point &rightCorner)
 {
+    // find top center pos
     bool flag = false;
+    int length = 0;
     for (int i = 0; i < edgeImage.rows; i++)
     {
         for (int j = 0; j < edgeImage.cols; j++)
         {
             if (edgeImage.ptr<uchar>(i)[j] == 255)
             {
-                topCorner = cv::Point(j, i);
+                length++;
                 flag = true;
+                continue;
+            }
+            else if(flag)
+            {
+                topCorner = cv::Point(j-1,i);
                 break;
             }
         }
         if (flag)
+        {
+            topCorner -= cv::Point(int(length*0.5),0);
             break;
+        }
     }
 
     leftCorner = topCorner;
