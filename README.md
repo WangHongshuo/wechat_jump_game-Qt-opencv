@@ -30,6 +30,12 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 ![](./README/readme.gif)    
 ## Change Log: ##
 
+- 2018.02.08:
+
+Fixed bug in locating block when the distance between man and block is too close.
+
+修复了当小人和方块距离太近导致方块定位不准的问题。
+
 - 2018.02.05:
 
 Finished Auto Jump function, but it performed bad. The ui was not designed. 
