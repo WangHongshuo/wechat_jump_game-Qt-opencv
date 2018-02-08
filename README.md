@@ -10,7 +10,8 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 目前只完成了调系数和手动测距功能，距离和鼠标按下时间的关系可能没那么简单，和手机分辨率也有关系。有时间试下能不能自动化。
 
 ## Auto Jump Mode High Score: ##
-- 2018.02.08: 307 [Image](./README/HighScoreImage.png)
+- 2018.02.08: 439 [Image](./README/HighScoreImage.png)
+- 2018.02.07: 307 
 
 ## How to use: ##
 
