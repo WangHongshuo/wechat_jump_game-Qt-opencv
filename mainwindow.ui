@@ -316,7 +316,7 @@
      <item>
       <widget class="QRadioButton" name="radioButtonAutoJump">
        <property name="text">
-        <string>Auto Jump[X]</string>
+        <string>Auto Jump</string>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -341,7 +341,10 @@
         </size>
        </property>
        <property name="text">
-        <string>Start</string>
+        <string>Start(S)</string>
+       </property>
+       <property name="shortcut">
+        <string>S</string>
        </property>
       </widget>
      </item>
@@ -473,6 +476,19 @@
     </property>
     <property name="text">
      <string>Parameter:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonTestSaveInputImage">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>620</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Test Save</string>
     </property>
    </widget>
   </widget>

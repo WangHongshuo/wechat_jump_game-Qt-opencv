@@ -38,6 +38,8 @@ private slots:
     void on_radioButtonAutoJump_clicked();
     void on_pushButtonSwitchAutoJump_clicked();
 
+    void on_pushButtonTestSaveInputImage_clicked();
+
 private:
     void showImage();
     void initializeAdbServer();
@@ -54,7 +56,7 @@ private:
     JumpJump jumpGame;
     bool isGetImage = false;
     bool isAutoJump = false;
-    double distanceParameter = 1.35;
+    double distanceParameter = 1.45;
 
     QProcess adbProcess;
     QString adbFilePath;

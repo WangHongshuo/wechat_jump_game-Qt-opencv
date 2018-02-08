@@ -236,7 +236,7 @@ void MainWindow::on_pushButtonGetScreenshotImage_clicked()
             ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
             ui->labelX2Y2->setText(QString::number(jumpGame.blockLocationX())+" , "+QString::number(jumpGame.blockLocationY()));
             ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
-            ui->statusBar->showMessage("Stand by.");
+            ui->statusBar->showMessage("Standby.");
         }
         else
             isGetImage = false;
@@ -351,8 +351,8 @@ void MainWindow::on_radioButtonManualJump_clicked()
     ui->pushButtonSwitchAutoJump->setEnabled(false);
     ui->pushButtonGetScreenshotImage->setEnabled(true);
     ui->pushButtonJump->setEnabled(true);
-    isAutoJump = false;
-    ui->pushButtonSwitchAutoJump->setText("Start");
+    if(isAutoJump)
+        on_pushButtonSwitchAutoJump_clicked();
 }
 
 void MainWindow::on_radioButtonAutoJump_clicked()
@@ -366,7 +366,8 @@ void MainWindow::on_pushButtonSwitchAutoJump_clicked()
 {
     if(!isAutoJump)
     {
-        ui->pushButtonSwitchAutoJump->setText("Stop");
+        ui->pushButtonSwitchAutoJump->setText("Stop(S)");
+        ui->pushButtonSwitchAutoJump->setShortcut(Qt::Key_S);
         isAutoJump = true;
         connect(timerAuToJump,SIGNAL(timeout()),this,SLOT(timerAuToJumpTimeoutEvent()));
         on_pushButtonGetScreenshotImage_clicked();
@@ -374,8 +375,19 @@ void MainWindow::on_pushButtonSwitchAutoJump_clicked()
     }
     else
     {
-        ui->pushButtonSwitchAutoJump->setText("Start");
+        ui->pushButtonSwitchAutoJump->setText("Start(S)");
+        ui->pushButtonSwitchAutoJump->setShortcut(Qt::Key_S);
         isAutoJump = false;
         disconnect(timerAuToJump,SIGNAL(timeout()),this,SLOT(timerAuToJumpTimeoutEvent()));
     }
+}
+
+void MainWindow::on_pushButtonTestSaveInputImage_clicked()
+{
+    QImage temp = Mat2QImage_with_data(jumpGame.returnInputImage());
+    QString filename = QFileDialog::getSaveFileName(this, tr("Open File"),
+                                                    QCoreApplication::applicationDirPath(),
+                                                    tr("Images (*.png *.xpm *.jpg *.tiff *.bmp)"));
+    if(!filename.isEmpty() || !filename.isNull())
+        temp.save(filename);
 }

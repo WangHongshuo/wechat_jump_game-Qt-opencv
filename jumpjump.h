@@ -8,22 +8,26 @@ class JumpJump
 {
 public:
     JumpJump();
-    ~JumpJump();
-    void setInputImage(cv::Mat &inputMat);
-    void setTemplateImage(cv::Mat &templateImg);
+    ~JumpJump();    
+
     cv::Mat edgeImage;
     cv::Mat outputImage;
-    void updateEdgeImage();
-    void update();
     double cannyThreshold1 = 54.0;
     double cannyThreshold2 = 174.0;
+
+    cv::Point manLocationPoint();
+    cv::Mat returnInputImage() const;
+    void setInputImage(cv::Mat &inputMat);
+    void setTemplateImage(cv::Mat &templateImg);
+    void updateEdgeImage();
+    void update();
     bool isLoadInputImage();
     int manLocationX() const;
     int manLocationY() const;
     int blockLocationX() const;
     int blockLocationY() const;
     double jumpDistance() const;
-    cv::Point manLocationPoint();
+
     void setLeftClickedPos(int x,int y);
 
 private:

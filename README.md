@@ -9,6 +9,9 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 这个东西最近好火，跟着别人的思路用C++试了试，感觉好难。       
 目前只完成了调系数和手动测距功能，距离和鼠标按下时间的关系可能没那么简单，和手机分辨率也有关系。有时间试下能不能自动化。
 
+## Auto Jump Mode High Score: ##
+- 2018.02.08: 307 [Image](./README/HighScoreImage.png)
+
 ## How to use: ##
 
 1. Turn on USB debugging and allow simulating input via USB debugging.

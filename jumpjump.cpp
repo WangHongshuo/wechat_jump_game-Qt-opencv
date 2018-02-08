@@ -91,6 +91,11 @@ cv::Point JumpJump::manLocationPoint()
     return manPos;
 }
 
+cv::Mat JumpJump::returnInputImage() const
+{
+    return inputImage;
+}
+
 void JumpJump::setLeftClickedPos(int x, int y)
 {
     if(x >= 0 && y >= 0 && isLoadImage)
@@ -252,5 +257,17 @@ void JumpJump::getBlockCenterPos(const cv::Point &topCorner, const cv::Point &le
     y = (int)(((x-x2)/(x1-x2))*(y1-y2)+y2);
     centerPoint.x = (int)x;
     centerPoint.y = (int)y;
+
+//    int x1 = topCorner.x, y1 = topCorner.y;
+//    int x2 = leftCorner.x, y2 = leftCorner.y;
+//    int x3 = rightCorner.x, y3 = rightCorner.y;
+//    double a = x1-x2, b = y1-y2;
+//    double c = x1-x3, d = y1-y3;
+//    double e = ((x1*x1-x2*x2)-(y2*y2-y1*y1))*0.5;
+//    double f = ((x1*x1-x3*x3)-(y3*y3-y1*y1))*0.5;
+//    double delta = b*c-a*d;
+//    int y4 = (int)(c*e-a*f)/delta;
+//    centerPoint.x = (int)(x2+x3)*0.5;
+//    centerPoint.y = (int)(y1+y4)*0.5;
 }
 
