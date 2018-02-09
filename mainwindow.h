@@ -25,6 +25,8 @@ private slots:
     void on_sliderCannyThreshold1_valueChanged(int value);
     void receiveWidgetShowImageClickedPosInImage(int x,int y);
     void timerAuToJumpTimeoutEvent();
+    void reloadAutoJumpTimer();
+    void getImageFromStdOutputAndProcessImage();
     void on_pushButtonJump_clicked();
     void on_pushButtonFindAdb_clicked();
     void on_pushButtonGetScreenshotImage_clicked();
@@ -46,8 +48,8 @@ private:
 
 
     QTimer *timerAuToJump;
-    int timerAuToJumpInterval = 0;
-    int timerAuToJumpDelay = 2500;
+    int autoJumpInterval = 0;
+    int timerAuToJumpDelay = 1000;
     Ui::MainWindow *ui;
     QImage qImageScreenShot;
     cv::Mat matScreenShot;
@@ -55,10 +57,13 @@ private:
     cv::Mat matTemplate;
     JumpJump jumpGame;
     bool isGetImage = false;
+    bool isAutoJumpMode = false;
     bool isAutoJump = false;
     double distanceParameter = 1.45;
 
     QProcess adbProcess;
+    QProcess jumpProcess;
+    QProcess getScreenshotProcess;
     QString adbFilePath;
     bool isAdbInitializated = false;
 };

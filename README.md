@@ -31,6 +31,12 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 ![](./README/readme.gif)    
 ## Change Log: ##
 
+- 2018.02.09:
+
+updated JumpJump::getBlockCenterPos and fixed crash bug when click Start(S) or Stop(S) pushbutton too frequent.
+
+更新了寻找方块中心的方法，修复了频繁点击开始（停止）按钮导致程序崩溃的问题。
+
 - 2018.02.08:
 
 Fixed bug in locating block when the distance between man and block is too close.

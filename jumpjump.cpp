@@ -162,11 +162,27 @@ void JumpJump::mainTask()
     setLeftClickedPos(blockCenterPos.x,blockCenterPos.y);
 }
 
-void JumpJump::getEdge(cv::Mat &src, cv::Mat &dst, double threshold1, double threshold2)
+void JumpJump::getEdge(const cv::Mat &src, cv::Mat &dst, double threshold1, double threshold2)
 {
     if(src.channels() == 3)
         cv::cvtColor(src,dst,CV_RGB2GRAY);
-    cv::Canny(src,dst,threshold1,threshold2);
+    else
+        dst = src.clone();
+
+    uchar temp;
+    int temp2;
+    for (int i = 0; i < dst.rows; i++)
+    {
+        temp = dst.ptr<uchar>(i)[0];
+        for (int j = 1; j < dst.cols; j++)
+        {
+            temp2 = temp - dst.ptr<uchar>(i)[j];
+            if (temp2 >= -1 && temp2 <= 1)
+                dst.ptr<uchar>(i)[j] = 0;
+        }
+        dst.ptr<uchar>(i)[0] = 0;
+    }
+    cv::threshold(dst, dst, 0, 255, CV_THRESH_OTSU);
 }
 
 void JumpJump::getTemplatePos(cv::Mat &src, const cv::Mat &target, cv::Point &targetLocation, cv::Point &oriTargetLocation)
@@ -188,9 +204,9 @@ void JumpJump::drawAllPoints()
     cv::circle(outputImage,blockTopCornerPos,6,cv::Scalar(0,0,255),CV_FILLED);
 }
 
-void JumpJump::removeManEdge(cv::Mat &edgeImg, const cv::Mat &manImg, const cv::Point &manPos)
+void JumpJump::removeManEdge(cv::Mat &dst, const cv::Mat &manImg, const cv::Point &manPos)
 {
-    cv::rectangle(edgeImg,cv::Rect(manPos.x-1,manPos.y-1,manImg.cols+1,manImg.rows+1),cv::Scalar(0),CV_FILLED);
+    cv::rectangle(dst,cv::Rect(manPos.x-1,manPos.y-1,manImg.cols+1,manImg.rows+1),cv::Scalar(0),CV_FILLED);
 }
 
 void JumpJump::getBlockCornersPos(const cv::Mat &edgeImage, cv::Point &topCorner, cv::Point &leftCorner, cv::Point &rightCorner)
@@ -226,14 +242,14 @@ void JumpJump::getBlockCornersPos(const cv::Mat &edgeImage, cv::Point &topCorner
     flag = true;
     do
     {
-        if (edgeImage.ptr<uchar>(leftCorner.y + 1)[leftCorner.x - 1] == 255)
-        {
-            leftCorner += cv::Point(-1, 1);
-            continue;
-        }
-        else if (edgeImage.ptr<uchar>(leftCorner.y)[leftCorner.x - 1] == 255)
+        if (edgeImage.ptr<uchar>(leftCorner.y)[leftCorner.x - 1] == 255)
         {
             leftCorner += cv::Point(-1, 0);
+            continue;
+        }
+        else if (edgeImage.ptr<uchar>(leftCorner.y + 1)[leftCorner.x - 1] == 255)
+        {
+            leftCorner += cv::Point(-1, 1);
             continue;
         }
         else
@@ -245,14 +261,14 @@ void JumpJump::getBlockCornersPos(const cv::Mat &edgeImage, cv::Point &topCorner
     flag = true;
     do
     {
-        if (edgeImage.ptr<uchar>(rightCorner.y + 1)[rightCorner.x + 1] == 255)
-        {
-            rightCorner += cv::Point(1, 1);
-            continue;
-        }
-        else if (edgeImage.ptr<uchar>(rightCorner.y)[rightCorner.x + 1] == 255)
+        if (edgeImage.ptr<uchar>(rightCorner.y)[rightCorner.x + 1] == 255)
         {
             rightCorner += cv::Point(1, 0);
+            continue;
+        }
+        else if (edgeImage.ptr<uchar>(rightCorner.y + 1)[rightCorner.x + 1] == 255)
+        {
+            rightCorner += cv::Point(1, 1);
             continue;
         }
         else
@@ -264,12 +280,8 @@ void JumpJump::getBlockCornersPos(const cv::Mat &edgeImage, cv::Point &topCorner
 
 void JumpJump::getBlockCenterPos(const cv::Point &topCorner, const cv::Point &leftCorner, const cv::Point &rightCorner, cv::Point &centerPoint)
 {
-    double x = topCorner.x, y;
-    double x1 = leftCorner.x, y1 = leftCorner.y;
-    double x2 = rightCorner.x, y2 = rightCorner.y;
-    y = (int)(((x-x2)/(x1-x2))*(y1-y2)+y2);
-    centerPoint.x = (int)x;
-    centerPoint.y = (int)y;
+    centerPoint.x = topCorner.x;
+    centerPoint.y = std::max(leftCorner.y,rightCorner.y);
 
 //    int x1 = topCorner.x, y1 = topCorner.y;
 //    int x2 = leftCorner.x, y2 = leftCorner.y;

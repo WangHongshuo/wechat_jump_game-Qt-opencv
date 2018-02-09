@@ -32,7 +32,7 @@ public:
 
 private:
     void mainTask();
-    void getEdge(cv::Mat &src,cv::Mat &dst, double threshold1, double threshold2);
+    void getEdge(const cv::Mat &src, cv::Mat &dst, double threshold1, double threshold2);
     void getTemplatePos(cv::Mat &src, const cv::Mat &target, cv::Point &targetLocation, cv::Point &oriTargetLocation);
     void drawAllPoints();
     void removeManEdge(cv::Mat &edgeImg, const cv::Mat &manImg, const cv::Point &manPos);

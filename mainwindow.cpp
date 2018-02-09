@@ -20,8 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    // 只接受数字
     timerAuToJump = new QTimer(this);
+    // 只接受数字
     QRegExp rx("^(-?[0]|-?[1-9][0-9]{0,5})(?:\\.\\d{1,4})?$|(^\\t?$)");
     QRegExpValidator *pReg = new QRegExpValidator(rx, this);
     adbFilePath = QCoreApplication::applicationDirPath() + "\\adb\\adb";
@@ -43,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->widgetShowImage->setEnableSendLeftClickedPosInImage(true);
     connect(ui->widgetShowImage,SIGNAL(sendLeftClickedPosInImage(int,int)),this,SLOT(receiveWidgetShowImageClickedPosInImage(int,int)));
     initializeAdbServer();
+    connect(&getScreenshotProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+        [=](){getImageFromStdOutputAndProcessImage();});
 
     qImageTemplate.load(QCoreApplication::applicationDirPath()+"/template.png");
     if(qImageTemplate.isNull())
@@ -151,7 +153,61 @@ void MainWindow::timerAuToJumpTimeoutEvent()
 {
     timerAuToJump->stop();
     on_pushButtonGetScreenshotImage_clicked();
-    on_pushButtonJump_clicked();
+}
+
+void MainWindow::reloadAutoJumpTimer()
+{
+    ui->statusBar->showMessage("Standby.");
+    if(isAutoJump && isAutoJumpMode)
+    {
+        timerAuToJump->setInterval(timerAuToJumpDelay);
+        timerAuToJump->start();
+    }
+    else if(isAutoJumpMode)
+        ui->pushButtonSwitchAutoJump->setEnabled(true);
+}
+
+void MainWindow::getImageFromStdOutputAndProcessImage()
+{
+    if(isAutoJumpMode && !isAutoJump)
+    {
+        ui->pushButtonSwitchAutoJump->setEnabled(true);
+    }
+    else
+    {
+        QByteArray data;
+        data = getScreenshotProcess.readAll();
+        //        qDebug() << data.length();
+        data = data.replace("\r\r\n","\n");
+        //        qDebug() << data.length();
+
+        // to Mat
+        std::vector<uchar> buffer(data.begin(),data.end());
+        matScreenShot = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
+
+        // to QImage
+        //        QBuffer buffer(&data);
+        //        QImageReader reader(&buffer);
+        //        reader.setFormat("PNG");
+        //        qImageScreenShot = reader.read();
+        ui->statusBar->showMessage("Processing...");
+        if(matScreenShot.data )
+        {
+            isGetImage = true;
+            jumpGame.setInputImage(matScreenShot);
+            showImage(jumpGame.outputImage);
+            ui->sliderCannyThreshold1->setValue(jumpGame.cannyThreshold1);
+            ui->sliderCannyThreshold2->setValue(jumpGame.cannyThreshold2);
+            ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
+            ui->labelX2Y2->setText(QString::number(jumpGame.blockLocationX())+" , "+QString::number(jumpGame.blockLocationY()));
+            ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
+            ui->statusBar->showMessage("Standby.");
+            if(isAutoJump && isAutoJumpMode)
+                on_pushButtonJump_clicked();
+        }
+        else
+            isGetImage = false;
+    }
 }
 
 void MainWindow::on_pushButtonJump_clicked()
@@ -166,17 +222,11 @@ void MainWindow::on_pushButtonJump_clicked()
     {
         ui->statusBar->showMessage("Jumping...");
         distanceParameter = ui->lineEditDistanceParameter->text().toDouble();
-        timerAuToJumpInterval = int(distanceParameter*jumpGame.jumpDistance());
+        autoJumpInterval = int(distanceParameter*jumpGame.jumpDistance());
         QString cmd = adbFilePath + " shell input swipe 200 200 200 200 " +
-                QString::number(timerAuToJumpInterval);
+                QString::number(autoJumpInterval);
         qDebug() << cmd;
-        adbProcess.start(cmd);
-        if(isAutoJump)
-        {
-            timerAuToJumpInterval += timerAuToJumpDelay;
-            timerAuToJump->setInterval(timerAuToJumpInterval);
-            timerAuToJump->start();
-        }
+        jumpProcess.start(cmd);
     }
 }
 
@@ -204,42 +254,9 @@ void MainWindow::on_pushButtonGetScreenshotImage_clicked()
         ui->statusBar->showMessage("Getting Screenshot...");
         QString cmd = adbFilePath + " shell screencap -p";
 //        qDebug() << cmd;
-        adbProcess.setProcessChannelMode(QProcess::MergedChannels);
+        getScreenshotProcess.setProcessChannelMode(QProcess::MergedChannels);
         // it takes too much time
-        adbProcess.start(cmd);
-        if(!adbProcess.waitForFinished())
-            qDebug() << "Error or timeout!";
-        QByteArray data;
-        data = adbProcess.readAll();
-//        qDebug() << data.length();
-        data = data.replace("\r\r\n","\n");
-//        qDebug() << data.length();
-
-        // to Mat
-        std::vector<uchar> buffer(data.begin(),data.end());
-        matScreenShot = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
-
-        // to QImage
-//        QBuffer buffer(&data);
-//        QImageReader reader(&buffer);
-//        reader.setFormat("PNG");
-//        qImageScreenShot = reader.read();
-        ui->statusBar->showMessage("Processing...");
-        if(matScreenShot.data )
-        {
-            isGetImage = true;
-            qDebug() << "1";
-            jumpGame.setInputImage(matScreenShot);
-            showImage(jumpGame.outputImage);
-            ui->sliderCannyThreshold1->setValue(jumpGame.cannyThreshold1);
-            ui->sliderCannyThreshold2->setValue(jumpGame.cannyThreshold2);
-            ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
-            ui->labelX2Y2->setText(QString::number(jumpGame.blockLocationX())+" , "+QString::number(jumpGame.blockLocationY()));
-            ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
-            ui->statusBar->showMessage("Standby.");
-        }
-        else
-            isGetImage = false;
+        getScreenshotProcess.start(cmd);
     }
 }
 
@@ -348,6 +365,7 @@ void MainWindow::on_pushButtonUpdateProcessedImage_clicked()
 
 void MainWindow::on_radioButtonManualJump_clicked()
 {
+    isAutoJumpMode = false;
     ui->pushButtonSwitchAutoJump->setEnabled(false);
     ui->pushButtonGetScreenshotImage->setEnabled(true);
     ui->pushButtonJump->setEnabled(true);
@@ -357,6 +375,7 @@ void MainWindow::on_radioButtonManualJump_clicked()
 
 void MainWindow::on_radioButtonAutoJump_clicked()
 {
+    isAutoJumpMode = true;
     ui->pushButtonSwitchAutoJump->setEnabled(true);
     ui->pushButtonGetScreenshotImage->setEnabled(false);
     ui->pushButtonJump->setEnabled(false);
@@ -370,14 +389,17 @@ void MainWindow::on_pushButtonSwitchAutoJump_clicked()
         ui->pushButtonSwitchAutoJump->setShortcut(Qt::Key_S);
         isAutoJump = true;
         connect(timerAuToJump,SIGNAL(timeout()),this,SLOT(timerAuToJumpTimeoutEvent()));
-        on_pushButtonGetScreenshotImage_clicked();
-        on_pushButtonJump_clicked();
+        connect(&jumpProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            [=](){reloadAutoJumpTimer();});
+        timerAuToJumpTimeoutEvent();
     }
     else
     {
+        isAutoJump = false;
+        if(getScreenshotProcess.state() == QProcess::Running || jumpProcess.state() == QProcess::Running)
+            ui->pushButtonSwitchAutoJump->setEnabled(false);
         ui->pushButtonSwitchAutoJump->setText("Start(S)");
         ui->pushButtonSwitchAutoJump->setShortcut(Qt::Key_S);
-        isAutoJump = false;
         disconnect(timerAuToJump,SIGNAL(timeout()),this,SLOT(timerAuToJumpTimeoutEvent()));
     }
 }
