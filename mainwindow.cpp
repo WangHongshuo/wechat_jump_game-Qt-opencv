@@ -400,6 +400,7 @@ void MainWindow::on_pushButtonSwitchAutoJump_clicked()
             ui->pushButtonSwitchAutoJump->setEnabled(false);
         ui->pushButtonSwitchAutoJump->setText("Start(S)");
         ui->pushButtonSwitchAutoJump->setShortcut(Qt::Key_S);
+        timerAuToJump->stop();
         disconnect(timerAuToJump,SIGNAL(timeout()),this,SLOT(timerAuToJumpTimeoutEvent()));
     }
 }

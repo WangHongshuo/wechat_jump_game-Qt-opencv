@@ -10,7 +10,8 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 目前只完成了调系数和手动测距功能，距离和鼠标按下时间的关系可能没那么简单，和手机分辨率也有关系。有时间试下能不能自动化。
 
 ## Auto Jump Mode High Score: ##
-- 2018.02.08: 439 [Image](./README/HighScoreImage.png)
+- 2018.02.12: 511 [Image](./README/HighScoreImage.png)
+- 2018.02.08: 439 
 - 2018.02.07: 307 
 
 ## How to use: ##
@@ -30,6 +31,13 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 ![](./README/readme.png)      
 ![](./README/readme.gif)    
 ## Change Log: ##
+
+- 2018.02.12:
+
+Improved locating the block corners and the block center function. This method is more radical and more accurate
+than the last version, but may lead to bigger error in some extreme case. (
+
+改进了检测角点和确定中心点的函数，改进后的方法更为激进，对圆台类块中心定位更加准确，但对其他个别情况会造成较大误差。 (
 
 - 2018.02.09:
 
