@@ -22,7 +22,6 @@ public:
 private slots:
     void showImage(QImage &src);
     void showImage(cv::Mat &src);
-    void on_sliderCannyThreshold1_valueChanged(int value);
     void receiveWidgetShowImageClickedPosInImage(int x,int y);
     void timerAuToJumpTimeoutEvent();
     void reloadAutoJumpTimer();
@@ -33,8 +32,6 @@ private slots:
     void on_pushButtonRefreshAdb_clicked();
     void on_pushButtonTest_clicked();
     void on_pushButtonLoadTemplate_clicked();
-    void on_checkBoxEnableFixCannyT_stateChanged(int arg1);
-    void on_sliderCannyThreshold2_valueChanged(int value);
     void on_pushButtonUpdateProcessedImage_clicked();
     void on_radioButtonManualJump_clicked();
     void on_radioButtonAutoJump_clicked();

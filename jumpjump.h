@@ -12,8 +12,6 @@ public:
 
     cv::Mat edgeImage;
     cv::Mat outputImage;
-    double cannyThreshold1 = 54.0;
-    double cannyThreshold2 = 174.0;
 
     cv::Point manLocationPoint();
     cv::Mat returnInputImage() const;
@@ -32,7 +30,7 @@ public:
 
 private:
     void mainTask();
-    void getEdge(const cv::Mat &src, cv::Mat &dst, double threshold1, double threshold2);
+    void getBinaryImage(const cv::Mat &src, cv::Mat &dst);
     void getTemplatePos(cv::Mat &src, const cv::Mat &target, cv::Point &targetLocation, cv::Point &oriTargetLocation);
     void drawAllPoints();
     void removeManEdge(cv::Mat &edgeImg, const cv::Mat &manImg, const cv::Point &manPos);

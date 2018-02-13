@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>676</width>
+    <width>580</width>
     <height>717</height>
    </rect>
   </property>
@@ -27,8 +27,8 @@
    <widget class="QLineEdit" name="lineEditDistanceParameter">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>540</y>
+      <x>460</x>
+      <y>510</y>
       <width>113</width>
       <height>20</height>
      </rect>
@@ -37,8 +37,8 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>20</y>
+      <x>380</x>
+      <y>230</y>
       <width>161</width>
       <height>50</height>
      </rect>
@@ -185,8 +185,8 @@
    <widget class="QPushButton" name="pushButtonRefreshAdb">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>580</y>
+      <x>380</x>
+      <y>550</y>
       <width>111</width>
       <height>23</height>
      </rect>
@@ -235,7 +235,7 @@
     <property name="geometry">
      <rect>
       <x>380</x>
-      <y>230</y>
+      <y>290</y>
       <width>150</width>
       <height>170</height>
      </rect>
@@ -350,113 +350,11 @@
      </item>
     </layout>
    </widget>
-   <widget class="QGroupBox" name="groupBox_2">
-    <property name="geometry">
-     <rect>
-      <x>540</x>
-      <y>90</y>
-      <width>140</width>
-      <height>340</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>140</width>
-      <height>340</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>140</width>
-      <height>340</height>
-     </size>
-    </property>
-    <property name="title">
-     <string>Fix Canny T </string>
-    </property>
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="0">
-      <widget class="QCheckBox" name="checkBoxEnableFixCannyT">
-       <property name="minimumSize">
-        <size>
-         <width>110</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Enable</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QSlider" name="sliderCannyThreshold1">
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>190</height>
-          </size>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QSlider" name="sliderCannyThreshold2">
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>190</height>
-          </size>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QSpinBox" name="spinBoxCannyThreshold1">
-         <property name="minimumSize">
-          <size>
-           <width>50</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QSpinBox" name="spinBoxCannyThreshold2">
-         <property name="minimumSize">
-          <size>
-           <width>50</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
    <widget class="QPushButton" name="pushButtonUpdateProcessedImage">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>410</y>
+      <x>380</x>
+      <y>460</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -468,8 +366,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>540</y>
+      <x>380</x>
+      <y>510</y>
       <width>71</width>
       <height>16</height>
      </rect>
@@ -497,7 +395,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>676</width>
+     <width>580</width>
      <height>25</height>
     </rect>
    </property>
@@ -522,70 +420,5 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>sliderCannyThreshold1</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>spinBoxCannyThreshold1</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>700</x>
-     <y>266</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>700</x>
-     <y>367</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>spinBoxCannyThreshold1</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>sliderCannyThreshold1</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>700</x>
-     <y>367</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>700</x>
-     <y>266</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>sliderCannyThreshold2</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>spinBoxCannyThreshold2</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>750</x>
-     <y>266</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>760</x>
-     <y>367</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>spinBoxCannyThreshold2</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>sliderCannyThreshold2</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>760</x>
-     <y>367</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>750</x>
-     <y>266</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

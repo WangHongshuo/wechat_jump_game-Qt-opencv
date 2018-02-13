@@ -28,12 +28,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEditDistanceParameter->setValidator(pReg);
     ui->lineEditDistanceParameter->setText(QString::number(distanceParameter));
 
-    ui->checkBoxEnableFixCannyT->setChecked(false);
-    ui->spinBoxCannyThreshold1->setEnabled(false);
-    ui->spinBoxCannyThreshold2->setEnabled(false);
-    ui->sliderCannyThreshold1->setEnabled(false);
-    ui->sliderCannyThreshold2->setEnabled(false);
-
     ui->pushButtonSwitchAutoJump->setEnabled(false);
 
     ui->widgetShowImage->setEnableDragImage(false);
@@ -117,26 +111,6 @@ void MainWindow::initializeAdbServer()
     }
 }
 
-void MainWindow::on_sliderCannyThreshold1_valueChanged(int value)
-{
-    if(jumpGame.isLoadInputImage() && ui->checkBoxEnableFixCannyT->isChecked())
-    {
-        jumpGame.cannyThreshold1 = value;
-        jumpGame.updateEdgeImage();
-        showImage(jumpGame.edgeImage);
-    }
-}
-
-void MainWindow::on_sliderCannyThreshold2_valueChanged(int value)
-{
-    if(jumpGame.isLoadInputImage() && ui->checkBoxEnableFixCannyT->isChecked())
-    {
-        jumpGame.cannyThreshold2 = value;
-        jumpGame.updateEdgeImage();
-        showImage(jumpGame.edgeImage);
-    }
-}
-
 void MainWindow::receiveWidgetShowImageClickedPosInImage(int x, int y)
 {
     if(ui->radioButtonManualJump->isChecked())
@@ -196,8 +170,6 @@ void MainWindow::getImageFromStdOutputAndProcessImage()
             isGetImage = true;
             jumpGame.setInputImage(matScreenShot);
             showImage(jumpGame.outputImage);
-            ui->sliderCannyThreshold1->setValue(jumpGame.cannyThreshold1);
-            ui->sliderCannyThreshold2->setValue(jumpGame.cannyThreshold2);
             ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
             ui->labelX2Y2->setText(QString::number(jumpGame.blockLocationX())+" , "+QString::number(jumpGame.blockLocationY()));
             ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
@@ -281,8 +253,6 @@ void MainWindow::on_pushButtonTest_clicked()
         matScreenShot = QImage2Mat_with_data(qImageScreenShot);
         jumpGame.setInputImage(matScreenShot);
         showImage(jumpGame.outputImage);
-        ui->sliderCannyThreshold1->setValue(jumpGame.cannyThreshold1);
-        ui->sliderCannyThreshold2->setValue(jumpGame.cannyThreshold2);
         ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
         ui->labelX2Y2->setText(QString::number(jumpGame.blockLocationX())+" , "+QString::number(jumpGame.blockLocationY()));
         ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
@@ -319,35 +289,6 @@ void MainWindow::on_pushButtonLoadTemplate_clicked()
         }
     }
 
-}
-
-void MainWindow::on_checkBoxEnableFixCannyT_stateChanged(int arg1)
-{
-    if(arg1)
-    {
-        ui->spinBoxCannyThreshold1->setEnabled(true);
-        ui->spinBoxCannyThreshold2->setEnabled(true);
-        ui->sliderCannyThreshold1->setEnabled(true);
-        ui->sliderCannyThreshold2->setEnabled(true);
-        if(jumpGame.isLoadInputImage())
-        {
-            jumpGame.updateEdgeImage();
-            showImage(jumpGame.edgeImage);
-        }
-    }
-    else
-    {
-        ui->spinBoxCannyThreshold1->setEnabled(false);
-        ui->spinBoxCannyThreshold2->setEnabled(false);
-        ui->sliderCannyThreshold1->setEnabled(false);
-        ui->sliderCannyThreshold2->setEnabled(false);
-        if(jumpGame.isLoadInputImage())
-        {
-            jumpGame.updateEdgeImage();
-            showImage(jumpGame.outputImage);
-        }
-
-    }
 }
 
 void MainWindow::on_pushButtonUpdateProcessedImage_clicked()

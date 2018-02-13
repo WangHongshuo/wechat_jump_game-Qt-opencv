@@ -48,7 +48,7 @@ void JumpJump::setTemplateImage(cv::Mat &templateImg)
 
 void JumpJump::updateEdgeImage()
 {
-    getEdge(roiImage,edgeImage,cannyThreshold1,cannyThreshold2);
+    getBinaryImage(roiImage,edgeImage);
 }
 
 void JumpJump::update()
@@ -146,7 +146,7 @@ void JumpJump::mainTask()
     outputImage = inputImage.clone();
     roiImage = inputImage(cv::Rect((0),int(0.3*(double)inputImageHeight),
                                     (inputImageWidth),int(0.4*(double)inputImageHeight)));
-    getEdge(roiImage,edgeImage,cannyThreshold1,cannyThreshold2);
+    getBinaryImage(roiImage,edgeImage);
     getTemplatePos(roiImage,templateImage,manPos,manPosInRoiEdgeImage);
     removeManEdge(edgeImage,templateImage,manPosInRoiEdgeImage);
     getBlockCornersPos(edgeImage,blockTopCornerPos,blockLeftCornerPos,blockRightCornerPos);
@@ -162,7 +162,7 @@ void JumpJump::mainTask()
     setLeftClickedPos(blockCenterPos.x,blockCenterPos.y);
 }
 
-void JumpJump::getEdge(const cv::Mat &src, cv::Mat &dst, double threshold1, double threshold2)
+void JumpJump::getBinaryImage(const cv::Mat &src, cv::Mat &dst)
 {
     if(src.channels() == 3)
         cv::cvtColor(src,dst,CV_RGB2GRAY);
