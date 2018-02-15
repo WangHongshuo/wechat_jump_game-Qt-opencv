@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QRegExpValidator *pReg = new QRegExpValidator(rx, this);
     adbFilePath = QCoreApplication::applicationDirPath() + "\\adb\\adb";
     ui->lineEditDistanceParameter->setValidator(pReg);
-    ui->lineEditDistanceParameter->setText(QString::number(distanceParameter));
+    ui->lineEditDistanceParameter->setText(QString::number(jumpGame.getPressScreenTimeParameter()));
 
     ui->pushButtonSwitchAutoJump->setEnabled(false);
 
@@ -120,6 +120,7 @@ void MainWindow::receiveWidgetShowImageClickedPosInImage(int x, int y)
         ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
         ui->labelX2Y2->setText(QString::number(x)+" , "+QString::number(y));
         ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
+        ui->labelParameter->setText(ui->lineEditDistanceParameter->text());
     }
 }
 
@@ -173,6 +174,7 @@ void MainWindow::getImageFromStdOutputAndProcessImage()
             ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
             ui->labelX2Y2->setText(QString::number(jumpGame.blockLocationX())+" , "+QString::number(jumpGame.blockLocationY()));
             ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
+            ui->labelParameter->setText(ui->lineEditDistanceParameter->text());
             ui->statusBar->showMessage("Standby.");
             if(isAutoJump && isAutoJumpMode)
                 on_pushButtonJump_clicked();
@@ -193,10 +195,8 @@ void MainWindow::on_pushButtonJump_clicked()
     else
     {
         ui->statusBar->showMessage("Jumping...");
-        distanceParameter = ui->lineEditDistanceParameter->text().toDouble();
-        autoJumpInterval = int(distanceParameter*jumpGame.jumpDistance());
         QString cmd = adbFilePath + " shell input swipe 200 200 200 200 " +
-                QString::number(autoJumpInterval);
+                QString::number(jumpGame.getPressScreenTime());
         qDebug() << cmd;
         jumpProcess.start(cmd);
     }
@@ -256,6 +256,7 @@ void MainWindow::on_pushButtonTest_clicked()
         ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
         ui->labelX2Y2->setText(QString::number(jumpGame.blockLocationX())+" , "+QString::number(jumpGame.blockLocationY()));
         ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
+        ui->labelParameter->setText(ui->lineEditDistanceParameter->text());
     }
 }
 
@@ -300,6 +301,7 @@ void MainWindow::on_pushButtonUpdateProcessedImage_clicked()
         ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
         ui->labelX2Y2->setText(QString::number(jumpGame.blockLocationX())+" , "+QString::number(jumpGame.blockLocationY()));
         ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
+        ui->labelParameter->setText(ui->lineEditDistanceParameter->text());
     }
 }
 
@@ -354,4 +356,10 @@ void MainWindow::on_pushButtonTestSaveInputImage_clicked()
                                                     tr("Images (*.png *.xpm *.jpg *.tiff *.bmp)"));
     if(!filename.isEmpty() || !filename.isNull())
         temp.save(filename);
+}
+
+void MainWindow::on_lineEditDistanceParameter_editingFinished()
+{
+    jumpGame.setPressScreenTimeParameter(ui->lineEditDistanceParameter->text().toDouble());
+    ui->labelParameter->setText(QString::number(jumpGame.getPressScreenTimeParameter()));
 }

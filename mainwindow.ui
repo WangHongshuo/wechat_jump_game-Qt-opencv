@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>580</width>
+    <width>589</width>
     <height>717</height>
    </rect>
   </property>
@@ -33,141 +33,6 @@
       <height>20</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>230</y>
-      <width>161</width>
-      <height>50</height>
-     </rect>
-    </property>
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="minimumSize">
-        <size>
-         <width>54</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>54</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>first:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="labelX1Y1">
-       <property name="minimumSize">
-        <size>
-         <width>99</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>99</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="minimumSize">
-        <size>
-         <width>54</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>54</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>second:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="labelX2Y2">
-       <property name="minimumSize">
-        <size>
-         <width>99</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>99</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>2</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="minimumSize">
-        <size>
-         <width>54</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>54</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>distance:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="labelDistance">
-       <property name="minimumSize">
-        <size>
-         <width>99</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>99</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>3</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </widget>
    <widget class="QPushButton" name="pushButtonFindAdb">
     <property name="geometry">
@@ -389,13 +254,189 @@
      <string>Test Save</string>
     </property>
    </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>220</y>
+      <width>167</width>
+      <height>68</height>
+     </rect>
+    </property>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>first:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="labelX1Y1">
+       <property name="minimumSize">
+        <size>
+         <width>99</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>99</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>NULL</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>second:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="labelX2Y2">
+       <property name="minimumSize">
+        <size>
+         <width>99</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>99</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>NULL</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>distance:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="labelDistance">
+       <property name="minimumSize">
+        <size>
+         <width>99</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>99</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>NULL</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Parameter:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="labelParameter">
+       <property name="minimumSize">
+        <size>
+         <width>99</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>99</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>NULL</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>580</width>
+     <width>589</width>
      <height>25</height>
     </rect>
    </property>

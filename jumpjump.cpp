@@ -44,6 +44,11 @@ void JumpJump::setTemplateImage(cv::Mat &templateImg)
     isLoadTemplateImage = true;
 }
 
+void JumpJump::setPressScreenTimeParameter(double t)
+{
+    pressScreenTimeParameter = t;
+}
+
 
 
 void JumpJump::updateEdgeImage()
@@ -84,6 +89,16 @@ int JumpJump::blockLocationY() const
 double JumpJump::jumpDistance() const
 {
     return distance;
+}
+
+int JumpJump::getPressScreenTime() const
+{
+    return pressScreenTime;
+}
+
+double JumpJump::getPressScreenTimeParameter() const
+{
+    return pressScreenTimeParameter;
 }
 
 cv::Point JumpJump::manLocationPoint()
@@ -137,6 +152,7 @@ void JumpJump::setLeftClickedPos(int x, int y)
         lastAreaX2 = x2;
         lastAreaY2 = y2;
         distance = std::sqrt(double(std::pow(x-manLocationX(),2)+std::pow(y-manLocationY(),2)));
+        pressScreenTime = (int)(distance*pressScreenTimeParameter);
     }
 
 }

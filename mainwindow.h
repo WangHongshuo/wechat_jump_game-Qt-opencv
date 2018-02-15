@@ -39,13 +39,14 @@ private slots:
 
     void on_pushButtonTestSaveInputImage_clicked();
 
+    void on_lineEditDistanceParameter_editingFinished();
+
 private:
     void showImage();
     void initializeAdbServer();
 
 
     QTimer *timerAuToJump;
-    int autoJumpInterval = 0;
     int timerAuToJumpDelay = 1000;
     Ui::MainWindow *ui;
     QImage qImageScreenShot;
@@ -56,7 +57,6 @@ private:
     bool isGetImage = false;
     bool isAutoJumpMode = false;
     bool isAutoJump = false;
-    double distanceParameter = 1.45;
 
     QProcess adbProcess;
     QProcess jumpProcess;

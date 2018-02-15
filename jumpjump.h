@@ -17,6 +17,7 @@ public:
     cv::Mat returnInputImage() const;
     void setInputImage(cv::Mat &inputMat);
     void setTemplateImage(cv::Mat &templateImg);
+    void setPressScreenTimeParameter(double t);
     void updateEdgeImage();
     void update();
     bool isLoadInputImage();
@@ -25,6 +26,9 @@ public:
     int blockLocationX() const;
     int blockLocationY() const;
     double jumpDistance() const;
+    int getPressScreenTime() const;
+    double getPressScreenTimeParameter() const;
+
 
     void setLeftClickedPos(int x,int y);
 
@@ -38,6 +42,8 @@ private:
     void getBlockCenterPos(const cv::Point &topCorner, const cv::Point &leftConer, const cv::Point &rightCorner, cv::Point &centerPoint);
 
     double distance = -1.0;
+    double pressScreenTimeParameter = 1.45;
+    int pressScreenTime = 0;
 
     int inputImageWidth;
     int inputImageHeight;
