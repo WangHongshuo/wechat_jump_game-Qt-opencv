@@ -20,12 +20,10 @@ public:
     ~MainWindow();
 
 private slots:
-    void showImage(QImage &src);
-    void showImage(cv::Mat &src);
     void receiveWidgetShowImageClickedPosInImage(int x,int y);
     void timerAuToJumpTimeoutEvent();
     void reloadAutoJumpTimer();
-    void getImageFromStdOutputAndProcessImage();
+
     void on_pushButtonJump_clicked();
     void on_pushButtonFindAdb_clicked();
     void on_pushButtonGetScreenshotImage_clicked();
@@ -36,15 +34,14 @@ private slots:
     void on_radioButtonManualJump_clicked();
     void on_radioButtonAutoJump_clicked();
     void on_pushButtonSwitchAutoJump_clicked();
-
     void on_pushButtonTestSaveInputImage_clicked();
-
     void on_lineEditDistanceParameter_editingFinished();
 
 private:
-    void showImage();
+    void showImage(QImage &src);
+    void showImage(cv::Mat &src);
     void initializeAdbServer();
-
+    void getImageFromStdOutputAndProcessImage();
 
     QTimer *timerAuToJump;
     int timerAuToJumpDelay = 1000;
