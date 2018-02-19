@@ -153,9 +153,13 @@ void MainWindow::getImageFromStdOutputAndProcessImage()
         QByteArray data;
         data = getScreenshotProcess.readAll();
         //        qDebug() << data.length();
-        data = data.replace("\r\r\n","\n");
-        //        qDebug() << data.length();
 
+        if(getScreenshotMode == 0)
+            data = data.replace("\r\n","\n");
+        else if(getScreenshotMode == 1)
+            data = data.replace("\r\r\n","\n");
+        //        qDebug() << data.length();
+        qDebug() << getScreenshotMode;
         // to Mat
         std::vector<uchar> buffer(data.begin(),data.end());
         matScreenShot = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
@@ -179,8 +183,18 @@ void MainWindow::getImageFromStdOutputAndProcessImage()
             if(isAutoJump && isAutoJumpMode)
                 on_pushButtonJump_clicked();
         }
-        else
+        else if(getScreenshotMode <= 1)
+        {
             isGetImage = false;
+            ui->statusBar->showMessage("Switch get screenshot mode...");
+            getScreenshotMode ++;
+            on_pushButtonGetScreenshotImage_clicked();
+        }
+        else
+        {
+            isGetImage = false;
+            ui->statusBar->showMessage("Get screenshot failed.");
+        }
     }
 }
 

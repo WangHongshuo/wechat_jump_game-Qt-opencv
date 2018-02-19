@@ -43,6 +43,7 @@ private:
     void initializeAdbServer();
     void getImageFromStdOutputAndProcessImage();
 
+    int getScreenshotMode = 0;
     QTimer *timerAuToJump;
     int timerAuToJumpDelay = 1000;
     Ui::MainWindow *ui;
