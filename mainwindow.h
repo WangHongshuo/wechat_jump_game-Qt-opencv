@@ -42,8 +42,10 @@ private:
     void showImage(cv::Mat &src);
     void initializeAdbServer();
     void getImageFromStdOutputAndProcessImage();
+    void updateLables();
 
     int getScreenshotMode = 0;
+    int getScreenshotModeErrorCount = 0;
     QTimer *timerAuToJump;
     int timerAuToJumpDelay = 1000;
     Ui::MainWindow *ui;

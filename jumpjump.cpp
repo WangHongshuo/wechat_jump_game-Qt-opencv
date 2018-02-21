@@ -153,6 +153,8 @@ void JumpJump::setLeftClickedPos(int x, int y)
         lastAreaY2 = y2;
         distance = std::sqrt(double(std::pow(x-manLocationX(),2)+std::pow(y-manLocationY(),2)));
         pressScreenTime = (int)(distance*pressScreenTimeParameter);
+        blockCenterPos.x = x;
+        blockCenterPos.y = y;
     }
 
 }

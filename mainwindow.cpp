@@ -39,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent) :
     initializeAdbServer();
     connect(&getScreenshotProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
         [=](){getImageFromStdOutputAndProcessImage();});
+    connect(&jumpProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+        [=](){reloadAutoJumpTimer();});
 
     qImageTemplate.load(QCoreApplication::applicationDirPath()+"/template.png");
     if(qImageTemplate.isNull())
@@ -117,10 +119,7 @@ void MainWindow::receiveWidgetShowImageClickedPosInImage(int x, int y)
     {
         jumpGame.setLeftClickedPos(x,y);
         showImage(jumpGame.outputImage);
-        ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
-        ui->labelX2Y2->setText(QString::number(x)+" , "+QString::number(y));
-        ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
-        ui->labelParameter->setText(ui->lineEditDistanceParameter->text());
+        updateLables();
     }
 }
 
@@ -155,11 +154,12 @@ void MainWindow::getImageFromStdOutputAndProcessImage()
         //        qDebug() << data.length();
 
         if(getScreenshotMode == 0)
-            data = data.replace("\r\n","\n");
-        else if(getScreenshotMode == 1)
             data = data.replace("\r\r\n","\n");
+        else if(getScreenshotMode == 1)
+            data = data.replace("\r\n","\n");
+
         //        qDebug() << data.length();
-        qDebug() << getScreenshotMode;
+
         // to Mat
         std::vector<uchar> buffer(data.begin(),data.end());
         matScreenShot = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
@@ -169,26 +169,29 @@ void MainWindow::getImageFromStdOutputAndProcessImage()
         //        QImageReader reader(&buffer);
         //        reader.setFormat("PNG");
         //        qImageScreenShot = reader.read();
+
         ui->statusBar->showMessage("Processing...");
         if(matScreenShot.data )
         {
+            getScreenshotModeErrorCount = 0;
             isGetImage = true;
             jumpGame.setInputImage(matScreenShot);
             showImage(jumpGame.outputImage);
-            ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
-            ui->labelX2Y2->setText(QString::number(jumpGame.blockLocationX())+" , "+QString::number(jumpGame.blockLocationY()));
-            ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
-            ui->labelParameter->setText(ui->lineEditDistanceParameter->text());
+            updateLables();
             ui->statusBar->showMessage("Standby.");
             if(isAutoJump && isAutoJumpMode)
                 on_pushButtonJump_clicked();
         }
-        else if(getScreenshotMode <= 1)
+        else if(getScreenshotModeErrorCount < 1)
         {
             isGetImage = false;
             ui->statusBar->showMessage("Switch get screenshot mode...");
-            getScreenshotMode ++;
-            on_pushButtonGetScreenshotImage_clicked();
+            if(getScreenshotMode == 0)
+                getScreenshotMode = 1;
+            else
+                getScreenshotMode = 0;
+            getScreenshotModeErrorCount++;
+            getImageFromStdOutputAndProcessImage();
         }
         else
         {
@@ -196,6 +199,14 @@ void MainWindow::getImageFromStdOutputAndProcessImage()
             ui->statusBar->showMessage("Get screenshot failed.");
         }
     }
+}
+
+void MainWindow::updateLables()
+{
+    ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
+    ui->labelX2Y2->setText(QString::number(jumpGame.blockLocationX())+" , "+QString::number(jumpGame.blockLocationY()));
+    ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
+    ui->labelParameter->setText(ui->lineEditDistanceParameter->text());
 }
 
 void MainWindow::on_pushButtonJump_clicked()
@@ -267,10 +278,7 @@ void MainWindow::on_pushButtonTest_clicked()
         matScreenShot = QImage2Mat_with_data(qImageScreenShot);
         jumpGame.setInputImage(matScreenShot);
         showImage(jumpGame.outputImage);
-        ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
-        ui->labelX2Y2->setText(QString::number(jumpGame.blockLocationX())+" , "+QString::number(jumpGame.blockLocationY()));
-        ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
-        ui->labelParameter->setText(ui->lineEditDistanceParameter->text());
+        updateLables();
     }
 }
 
@@ -312,10 +320,7 @@ void MainWindow::on_pushButtonUpdateProcessedImage_clicked()
     {
         jumpGame.update();
         showImage(jumpGame.outputImage);
-        ui->labelX1Y1->setText(QString::number(jumpGame.manLocationX())+" , "+QString::number(jumpGame.manLocationY()));
-        ui->labelX2Y2->setText(QString::number(jumpGame.blockLocationX())+" , "+QString::number(jumpGame.blockLocationY()));
-        ui->labelDistance->setText(QString::number(jumpGame.jumpDistance()));
-        ui->labelParameter->setText(ui->lineEditDistanceParameter->text());
+        updateLables();
     }
 }
 
@@ -346,8 +351,6 @@ void MainWindow::on_pushButtonSwitchAutoJump_clicked()
         ui->pushButtonSwitchAutoJump->setShortcut(Qt::Key_S);
         isAutoJump = true;
         connect(timerAuToJump,SIGNAL(timeout()),this,SLOT(timerAuToJumpTimeoutEvent()));
-        connect(&jumpProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            [=](){reloadAutoJumpTimer();});
         timerAuToJumpTimeoutEvent();
     }
     else
