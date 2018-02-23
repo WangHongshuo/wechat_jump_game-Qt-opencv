@@ -10,7 +10,7 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 目前只完成了调系数和手动测距功能，距离和鼠标按下时间的关系可能没那么简单，和手机分辨率也有关系。有时间试下能不能自动化。
 
 ## Auto Jump Mode High Score: ##
-- 2018.02.17: 884 [Image](https://github.com/WangHongshuo/Readme_Images_Repository/tree/master/wechat_jump_game-Qt-opencv/HighScoreImage.png)
+- 2018.02.17: 884 [Image](https://github.com/WangHongshuo/Readme_Images_Repository/blob/master/wechat_jump_game-Qt-opencv/HighScoreImage.png)
 - 2018.02.12: 511 
 - 2018.02.08: 439 
 - 2018.02.07: 307 
@@ -29,8 +29,8 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 4. 稳定后再手动获取截图标点弹跳。      
                 
 ## Screenshot: ##
-![](https://github.com/WangHongshuo/Readme_Images_Repository/tree/master/wechat_jump_game-Qt-opencv/readme.png)      
-![](https://github.com/WangHongshuo/Readme_Images_Repository/tree/master/wechat_jump_game-Qt-opencv/readme.gif)    
+![](https://github.com/WangHongshuo/Readme_Images_Repository/blob/master/wechat_jump_game-Qt-opencv/readme.png)      
+![](https://github.com/WangHongshuo/Readme_Images_Repository/blob/master/wechat_jump_game-Qt-opencv/readme.gif)    
 ## Change Log: ##
 
 - 2018.02.12:
