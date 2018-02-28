@@ -29,14 +29,16 @@ SOURCES += \
     jumpjump.cpp \
     QImageMatConvert/mat_qimage_convert.cpp \
     ImageWidget-Qt/ImageWidget.cpp \
-    ImageWidget-Qt/selectrect.cpp
+    ImageWidget-Qt/selectrect.cpp \
+    jumpcontroller.cpp
 
 HEADERS += \
         mainwindow.h \
     jumpjump.h \
     QImageMatConvert/mat_qimage_convert.h \
     ImageWidget-Qt/ImageWidget.h \
-    ImageWidget-Qt/selectrect.h
+    ImageWidget-Qt/selectrect.h \
+    jumpcontroller.h
 
 FORMS += \
         mainwindow.ui

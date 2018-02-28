@@ -2,8 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <windows.h>
 #include "jumpjump.h"
+#include "jumpcontroller.h"
 #include <QTimer>
 #include <QProcess>
 
@@ -36,11 +36,11 @@ private slots:
     void on_pushButtonSwitchAutoJump_clicked();
     void on_pushButtonTestSaveInputImage_clicked();
     void on_lineEditDistanceParameter_editingFinished();
-
+    void receiveMatScreenshotAndProcess(cv::Mat img);
+    void receiveJumpControllerMessage(QString msg);
 private:
     void showImage(QImage &src);
     void showImage(cv::Mat &src);
-    void initializeAdbServer();
     void getImageFromStdOutputAndProcessImage();
     void updateLables();
 
@@ -63,6 +63,8 @@ private:
     QProcess getScreenshotProcess;
     QString adbFilePath;
     bool isAdbInitializated = false;
+
+    JumpController controller;
 };
 
 #endif // MAINWINDOW_H

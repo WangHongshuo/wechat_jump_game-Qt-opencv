@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // 只接受数字
     QRegExp rx("^(-?[0]|-?[1-9][0-9]{0,5})(?:\\.\\d{1,4})?$|(^\\t?$)");
     QRegExpValidator *pReg = new QRegExpValidator(rx, this);
-    adbFilePath = QCoreApplication::applicationDirPath() + "\\adb\\adb";
+
     ui->lineEditDistanceParameter->setValidator(pReg);
     ui->lineEditDistanceParameter->setText(QString::number(jumpGame.getPressScreenTimeParameter()));
 
@@ -35,12 +35,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->widgetShowImage->setEnableRecordLastParameters(true);
     ui->widgetShowTemplate->setEnableOnlyShowImage(true);
     ui->widgetShowImage->setEnableSendLeftClickedPosInImage(true);
-    connect(ui->widgetShowImage,SIGNAL(sendLeftClickedPosInImage(int,int)),this,SLOT(receiveWidgetShowImageClickedPosInImage(int,int)));
-    initializeAdbServer();
-    connect(&getScreenshotProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-        [=](){getImageFromStdOutputAndProcessImage();});
-    connect(&jumpProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-        [=](){reloadAutoJumpTimer();});
 
     qImageTemplate.load(QCoreApplication::applicationDirPath()+"/template.png");
     if(qImageTemplate.isNull())
@@ -56,6 +50,13 @@ MainWindow::MainWindow(QWidget *parent) :
         matTemplate = QImage2Mat_with_pointer(qImageTemplate);
         jumpGame.setTemplateImage(matTemplate);
     }
+
+    connect(ui->widgetShowImage,SIGNAL(sendLeftClickedPosInImage(int,int)),this,SLOT(receiveWidgetShowImageClickedPosInImage(int,int)));
+    connect(&controller,SIGNAL(sendMatScreenshotImage(cv::Mat)),this,SLOT(receiveMatScreenshotAndProcess(cv::Mat)));
+    connect(&controller,SIGNAL(sendJumpControllerMessage(QString)),this,SLOT(receiveJumpControllerMessage(QString)));
+
+    adbFilePath = QCoreApplication::applicationDirPath() + "\\adb\\adb";
+    controller.initializeAdbService(adbFilePath);
 }
 
 MainWindow::~MainWindow()
@@ -78,41 +79,6 @@ void MainWindow::showImage(cv::Mat &src)
     }
 }
 
-void MainWindow::initializeAdbServer()
-{
-    adbProcess.start(adbFilePath + " devices");
-    adbProcess.waitForFinished();
-    adbProcess.start(adbFilePath + " devices");
-    if(!adbProcess.waitForFinished())
-    {
-        ui->statusBar->showMessage("adb error!");
-        isAdbInitializated = false;
-    }
-    else
-    {
-        QString output =QString::fromLocal8Bit(adbProcess.readAllStandardOutput());
-        output = output.simplified();
-        if(output.startsWith("List of devices attached"))
-        {
-            if(output.mid(25).isEmpty() || output.mid(25).isNull())
-            {
-                ui->statusBar->showMessage("No Devices!");
-                isAdbInitializated = false;
-            }
-            else
-            {
-                ui->statusBar->showMessage("Find: " + output.mid(25));
-                isAdbInitializated = true;
-            }
-        }
-        else
-        {
-            ui->statusBar->showMessage("adb error!");
-            isAdbInitializated = false;
-        }
-    }
-}
-
 void MainWindow::receiveWidgetShowImageClickedPosInImage(int x, int y)
 {
     if(ui->radioButtonManualJump->isChecked())
@@ -131,73 +97,59 @@ void MainWindow::timerAuToJumpTimeoutEvent()
 
 void MainWindow::reloadAutoJumpTimer()
 {
-    ui->statusBar->showMessage("Standby.");
     if(isAutoJump && isAutoJumpMode)
     {
         timerAuToJump->setInterval(timerAuToJumpDelay);
         timerAuToJump->start();
     }
-    else if(isAutoJumpMode)
-        ui->pushButtonSwitchAutoJump->setEnabled(true);
 }
 
 void MainWindow::getImageFromStdOutputAndProcessImage()
 {
-    if(isAutoJumpMode && !isAutoJump)
+    QByteArray data;
+    data = getScreenshotProcess.readAll();
+    //        qDebug() << data.length();
+
+    if(getScreenshotMode == 0)
+        data = data.replace("\r\r\n","\n");
+    else if(getScreenshotMode == 1)
+        data = data.replace("\r\n","\n");
+
+    //        qDebug() << data.length();
+
+    // to Mat
+    std::vector<uchar> buffer(data.begin(),data.end());
+    matScreenShot = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
+
+    // to QImage
+    //        QBuffer buffer(&data);
+    //        QImageReader reader(&buffer);
+    //        reader.setFormat("PNG");
+    //        qImageScreenShot = reader.read();
+
+    if(matScreenShot.data)
     {
-        ui->pushButtonSwitchAutoJump->setEnabled(true);
+        getScreenshotModeErrorCount = 0;
+        isGetImage = true;
+        jumpGame.setInputImage(matScreenShot);
+        showImage(jumpGame.outputImage);
+        updateLables();
+        if(isAutoJump && isAutoJumpMode)
+            on_pushButtonJump_clicked();
+    }
+    else if(getScreenshotModeErrorCount < 1)
+    {
+        isGetImage = false;
+        if(getScreenshotMode == 0)
+            getScreenshotMode = 1;
+        else
+            getScreenshotMode = 0;
+        getScreenshotModeErrorCount++;
+        getImageFromStdOutputAndProcessImage();
     }
     else
     {
-        QByteArray data;
-        data = getScreenshotProcess.readAll();
-        //        qDebug() << data.length();
-
-        if(getScreenshotMode == 0)
-            data = data.replace("\r\r\n","\n");
-        else if(getScreenshotMode == 1)
-            data = data.replace("\r\n","\n");
-
-        //        qDebug() << data.length();
-
-        // to Mat
-        std::vector<uchar> buffer(data.begin(),data.end());
-        matScreenShot = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
-
-        // to QImage
-        //        QBuffer buffer(&data);
-        //        QImageReader reader(&buffer);
-        //        reader.setFormat("PNG");
-        //        qImageScreenShot = reader.read();
-
-        ui->statusBar->showMessage("Processing...");
-        if(matScreenShot.data )
-        {
-            getScreenshotModeErrorCount = 0;
-            isGetImage = true;
-            jumpGame.setInputImage(matScreenShot);
-            showImage(jumpGame.outputImage);
-            updateLables();
-            ui->statusBar->showMessage("Standby.");
-            if(isAutoJump && isAutoJumpMode)
-                on_pushButtonJump_clicked();
-        }
-        else if(getScreenshotModeErrorCount < 1)
-        {
-            isGetImage = false;
-            ui->statusBar->showMessage("Switch get screenshot mode...");
-            if(getScreenshotMode == 0)
-                getScreenshotMode = 1;
-            else
-                getScreenshotMode = 0;
-            getScreenshotModeErrorCount++;
-            getImageFromStdOutputAndProcessImage();
-        }
-        else
-        {
-            isGetImage = false;
-            ui->statusBar->showMessage("Get screenshot failed.");
-        }
+        isGetImage = false;
     }
 }
 
@@ -211,7 +163,7 @@ void MainWindow::updateLables()
 
 void MainWindow::on_pushButtonJump_clicked()
 {
-    if(!isAdbInitializated)
+    if(!controller.isAdbServiceInitializatedFlag())
     {
         QMessageBox msgBox;
         msgBox.setText(tr("Can't find adb.exe!"));
@@ -219,11 +171,7 @@ void MainWindow::on_pushButtonJump_clicked()
     }
     else
     {
-        ui->statusBar->showMessage("Jumping...");
-        QString cmd = adbFilePath + " shell input swipe 200 200 200 200 " +
-                QString::number(jumpGame.getPressScreenTime());
-        qDebug() << cmd;
-        jumpProcess.start(cmd);
+        controller.jumpAction(jumpGame.getPressScreenTime());
     }
 }
 
@@ -235,12 +183,12 @@ void MainWindow::on_pushButtonFindAdb_clicked()
     qDebug() << adbFilePath;
     adbFilePath.chop(4);
     adbFilePath = QDir::toNativeSeparators(adbFilePath);
-    initializeAdbServer();
+    controller.refreshAdbService(adbFilePath);
 }
 
 void MainWindow::on_pushButtonGetScreenshotImage_clicked()
 {
-    if(!isAdbInitializated)
+    if(!controller.isDetectedDeviceFlag())
     {
         QMessageBox msgBox;
         msgBox.setText(tr("Adb initialization failed!"));
@@ -248,18 +196,13 @@ void MainWindow::on_pushButtonGetScreenshotImage_clicked()
     }
     else
     {
-        ui->statusBar->showMessage("Getting Screenshot...");
-        QString cmd = adbFilePath + " shell screencap -p";
-//        qDebug() << cmd;
-        getScreenshotProcess.setProcessChannelMode(QProcess::MergedChannels);
-        // it takes too much time
-        getScreenshotProcess.start(cmd);
+        controller.getMatScreenshotImage();
     }
 }
 
 void MainWindow::on_pushButtonRefreshAdb_clicked()
 {
-    initializeAdbServer();
+    controller.refreshAdbService();
 }
 
 void MainWindow::on_pushButtonTest_clicked()
@@ -356,8 +299,8 @@ void MainWindow::on_pushButtonSwitchAutoJump_clicked()
     else
     {
         isAutoJump = false;
-        if(getScreenshotProcess.state() == QProcess::Running || jumpProcess.state() == QProcess::Running)
-            ui->pushButtonSwitchAutoJump->setEnabled(false);
+        jumpProcess.kill();
+        getScreenshotProcess.kill();
         ui->pushButtonSwitchAutoJump->setText("Start(S)");
         ui->pushButtonSwitchAutoJump->setShortcut(Qt::Key_S);
         timerAuToJump->stop();
@@ -379,4 +322,19 @@ void MainWindow::on_lineEditDistanceParameter_editingFinished()
 {
     jumpGame.setPressScreenTimeParameter(ui->lineEditDistanceParameter->text().toDouble());
     ui->labelParameter->setText(QString::number(jumpGame.getPressScreenTimeParameter()));
+}
+
+void MainWindow::receiveMatScreenshotAndProcess(cv::Mat img)
+{
+    matScreenShot = img;
+    if(matScreenShot.data)
+    {
+        jumpGame.setInputImage(matScreenShot);
+        showImage(jumpGame.outputImage);
+    }
+}
+
+void MainWindow::receiveJumpControllerMessage(QString msg)
+{
+    ui->statusBar->showMessage(msg);
 }
