@@ -33,6 +33,12 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 ![](https://github.com/WangHongshuo/Readme_Images_Repository/blob/master/wechat_jump_game-Qt-opencv/readme.gif)    
 ## Change Log: ##
 
+- 2018.03.01:
+
+Separated adb part to a controller and fixed a bug in JumpJump class.
+
+将Adb部分独立来成为一个控制器，修复了JumpJump类中的一个错误。
+
 - 2018.02.12:
 
 Improved locating the block corners and the block center function. This method is more radical and more accurate
