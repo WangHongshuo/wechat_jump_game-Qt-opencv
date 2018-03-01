@@ -20,7 +20,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    timerAuToJump = new QTimer(this);
     // 只接受数字
     QRegExp rx("^(-?[0]|-?[1-9][0-9]{0,5})(?:\\.\\d{1,4})?$|(^\\t?$)");
     QRegExpValidator *pReg = new QRegExpValidator(rx, this);
@@ -86,70 +85,6 @@ void MainWindow::receiveWidgetShowImageClickedPosInImage(int x, int y)
         jumpGame.setLeftClickedPos(x,y);
         showImage(jumpGame.outputImage);
         updateLables();
-    }
-}
-
-void MainWindow::timerAuToJumpTimeoutEvent()
-{
-    timerAuToJump->stop();
-    on_pushButtonGetScreenshotImage_clicked();
-}
-
-void MainWindow::reloadAutoJumpTimer()
-{
-    if(isAutoJump && isAutoJumpMode)
-    {
-        timerAuToJump->setInterval(timerAuToJumpDelay);
-        timerAuToJump->start();
-    }
-}
-
-void MainWindow::getImageFromStdOutputAndProcessImage()
-{
-    QByteArray data;
-    data = getScreenshotProcess.readAll();
-    //        qDebug() << data.length();
-
-    if(getScreenshotMode == 0)
-        data = data.replace("\r\r\n","\n");
-    else if(getScreenshotMode == 1)
-        data = data.replace("\r\n","\n");
-
-    //        qDebug() << data.length();
-
-    // to Mat
-    std::vector<uchar> buffer(data.begin(),data.end());
-    matScreenShot = cv::imdecode(buffer,CV_LOAD_IMAGE_COLOR);
-
-    // to QImage
-    //        QBuffer buffer(&data);
-    //        QImageReader reader(&buffer);
-    //        reader.setFormat("PNG");
-    //        qImageScreenShot = reader.read();
-
-    if(matScreenShot.data)
-    {
-        getScreenshotModeErrorCount = 0;
-        isGetImage = true;
-        jumpGame.setInputImage(matScreenShot);
-        showImage(jumpGame.outputImage);
-        updateLables();
-        if(isAutoJump && isAutoJumpMode)
-            on_pushButtonJump_clicked();
-    }
-    else if(getScreenshotModeErrorCount < 1)
-    {
-        isGetImage = false;
-        if(getScreenshotMode == 0)
-            getScreenshotMode = 1;
-        else
-            getScreenshotMode = 0;
-        getScreenshotModeErrorCount++;
-        getImageFromStdOutputAndProcessImage();
-    }
-    else
-    {
-        isGetImage = false;
     }
 }
 
@@ -270,17 +205,17 @@ void MainWindow::on_pushButtonUpdateProcessedImage_clicked()
 
 void MainWindow::on_radioButtonManualJump_clicked()
 {
-    isAutoJumpMode = false;
+    isAutoJumpModeSelected = false;
     ui->pushButtonSwitchAutoJump->setEnabled(false);
     ui->pushButtonGetScreenshotImage->setEnabled(true);
     ui->pushButtonJump->setEnabled(true);
-    if(isAutoJump)
+    if(isAutoJumpActived)
         on_pushButtonSwitchAutoJump_clicked();
 }
 
 void MainWindow::on_radioButtonAutoJump_clicked()
 {
-    isAutoJumpMode = true;
+    isAutoJumpModeSelected = true;
     ui->pushButtonSwitchAutoJump->setEnabled(true);
     ui->pushButtonGetScreenshotImage->setEnabled(false);
     ui->pushButtonJump->setEnabled(false);
@@ -288,23 +223,19 @@ void MainWindow::on_radioButtonAutoJump_clicked()
 
 void MainWindow::on_pushButtonSwitchAutoJump_clicked()
 {
-    if(!isAutoJump)
+    if(!isAutoJumpActived)
     {
         ui->pushButtonSwitchAutoJump->setText("Stop(S)");
         ui->pushButtonSwitchAutoJump->setShortcut(Qt::Key_S);
-        isAutoJump = true;
-        connect(timerAuToJump,SIGNAL(timeout()),this,SLOT(timerAuToJumpTimeoutEvent()));
-        timerAuToJumpTimeoutEvent();
+        isAutoJumpActived = true;
+        controller.startAutoJumpLoop();
     }
     else
     {
-        isAutoJump = false;
-        jumpProcess.kill();
-        getScreenshotProcess.kill();
+        isAutoJumpActived = false;
         ui->pushButtonSwitchAutoJump->setText("Start(S)");
         ui->pushButtonSwitchAutoJump->setShortcut(Qt::Key_S);
-        timerAuToJump->stop();
-        disconnect(timerAuToJump,SIGNAL(timeout()),this,SLOT(timerAuToJumpTimeoutEvent()));
+        controller.stopAutoJumpLoop();
     }
 }
 
@@ -331,6 +262,9 @@ void MainWindow::receiveMatScreenshotAndProcess(cv::Mat img)
     {
         jumpGame.setInputImage(matScreenShot);
         showImage(jumpGame.outputImage);
+        updateLables();
+        if(isAutoJumpModeSelected &&isAutoJumpActived)
+            controller.jumpAction(jumpGame.getPressScreenTime());
     }
 }
 

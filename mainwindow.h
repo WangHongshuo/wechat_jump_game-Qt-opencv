@@ -20,10 +20,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void receiveWidgetShowImageClickedPosInImage(int x,int y);
-    void timerAuToJumpTimeoutEvent();
-    void reloadAutoJumpTimer();
-
     void on_pushButtonJump_clicked();
     void on_pushButtonFindAdb_clicked();
     void on_pushButtonGetScreenshotImage_clicked();
@@ -36,33 +32,27 @@ private slots:
     void on_pushButtonSwitchAutoJump_clicked();
     void on_pushButtonTestSaveInputImage_clicked();
     void on_lineEditDistanceParameter_editingFinished();
+
+    void receiveWidgetShowImageClickedPosInImage(int x,int y);
     void receiveMatScreenshotAndProcess(cv::Mat img);
     void receiveJumpControllerMessage(QString msg);
+
 private:
     void showImage(QImage &src);
     void showImage(cv::Mat &src);
-    void getImageFromStdOutputAndProcessImage();
     void updateLables();
 
-    int getScreenshotMode = 0;
-    int getScreenshotModeErrorCount = 0;
-    QTimer *timerAuToJump;
-    int timerAuToJumpDelay = 1000;
     Ui::MainWindow *ui;
     QImage qImageScreenShot;
     cv::Mat matScreenShot;
     QImage qImageTemplate;
     cv::Mat matTemplate;
-    JumpJump jumpGame;
-    bool isGetImage = false;
-    bool isAutoJumpMode = false;
-    bool isAutoJump = false;
 
-    QProcess adbProcess;
-    QProcess jumpProcess;
-    QProcess getScreenshotProcess;
+    JumpJump jumpGame;
+    bool isAutoJumpModeSelected = false;
+    bool isAutoJumpActived = false;
+
     QString adbFilePath;
-    bool isAdbInitializated = false;
 
     JumpController controller;
 };

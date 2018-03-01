@@ -5,14 +5,15 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
+#include <QTime>
 
 JumpController::JumpController()
 {
     getScreenshotProcess.setProcessChannelMode(QProcess::MergedChannels);
-    QObject::connect(&getScreenshotProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-        [=](){getImageFromStdOutput();});
-    QObject::connect(&jumpProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-        [=](){jumpActionFinishedEvent();});
+    QObject::connect(&getScreenshotProcess,SIGNAL(finished(int)),
+                     this,SLOT(getImageFromStdOutput()));
+    QObject::connect(&jumpProcess,SIGNAL(finished(int)),
+                     this,SLOT(jumpActionFinishedEvent()));
 }
 
 bool JumpController::initializeAdbService(QString path)
@@ -57,6 +58,28 @@ bool JumpController::restartAdbService()
         emit sendJumpControllerMessage(QString("Adb path is invalid!"));
         return false;
     }
+}
+
+void JumpController::startAutoJumpLoop()
+{
+    QObject::connect(&jumpProcess,SIGNAL(finished(int)),
+                     this,SLOT(jumpActionFinishedLoopEvent()));
+    QObject::connect(&timerJumpInterval,SIGNAL(timeout()),
+                     this,SLOT(timerJumpIntervalTimeoutEvent()));
+    getMatScreenshotImage();
+}
+
+void JumpController::stopAutoJumpLoop()
+{
+    timerJumpInterval.stop();
+    if(jumpProcess.state() == QProcess::Running)
+        jumpProcess.terminate();
+    if(getScreenshotProcess.state() == QProcess::Running)
+        getScreenshotProcess.terminate();
+    QObject::disconnect(&jumpProcess,SIGNAL(finished(int)),
+                        this,SLOT(jumpActionFinishedLoopEvent()));
+    QObject::disconnect(&timerJumpInterval,SIGNAL(timeout()),
+                        this,SLOT(timerJumpIntervalTimeoutEvent()));
 }
 
 void JumpController::getMatScreenshotImage()
@@ -172,5 +195,18 @@ void JumpController::getImageFromStdOutput()
 
 void JumpController::jumpActionFinishedEvent()
 {
-    emit sendJumpControllerMessage(QString("Jump finished!"));
+    emit sendJumpControllerMessage(QString("Standby."));
+}
+
+void JumpController::jumpActionFinishedLoopEvent()
+{
+    timerJumpInterval.setInterval(jumpInterval);
+    timerJumpInterval.start();
+    emit sendJumpControllerMessage(QString("Wait for jump finished."));
+}
+
+void JumpController::timerJumpIntervalTimeoutEvent()
+{
+    timerJumpInterval.stop();
+    getMatScreenshotImage();
 }
