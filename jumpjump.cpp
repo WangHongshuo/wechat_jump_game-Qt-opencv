@@ -230,6 +230,7 @@ void JumpJump::removeManEdge(cv::Mat &dst, const cv::Mat &manImg, const cv::Poin
 
 void JumpJump::getBlockCornersPos(const cv::Mat &edgeImage, cv::Point &topCorner, cv::Point &leftCorner, cv::Point &rightCorner)
 {
+    topCorner = leftCorner = rightCorner = cv::Point(0,0);
     // find top center pos
     bool flag = false;
     int length = 0;
@@ -255,6 +256,9 @@ void JumpJump::getBlockCornersPos(const cv::Mat &edgeImage, cv::Point &topCorner
             break;
         }
     }
+    // didn't find top corner, stop searching.
+    if(!flag)
+        return;
 
     leftCorner = topCorner;
     rightCorner = topCorner;
