@@ -152,7 +152,25 @@ void JumpJump::setLeftClickedPos(int x, int y)
         lastAreaX2 = x2;
         lastAreaY2 = y2;
         distance = std::sqrt(double(std::pow(x-manLocationX(),2)+std::pow(y-manLocationY(),2)));
-        pressScreenTime = (int)(distance*pressScreenTimeParameter);
+        // fixed press time when the block center pos is close to the man pos
+        if(distance < 500 && distance > 200)
+        {
+            pressScreenTimeParameterTemp = pressScreenTimeParameter+0.01*(6-(int(distance)/50-4));
+            qDebug() << 0.01*(6-(int(distance)/50-4));
+        }
+        else if(distance <= 200)
+        {
+            pressScreenTimeParameterTemp = pressScreenTimeParameter+0.02*(4-int(distance)/50);
+            qDebug() << 0.02*(4-int(distance)/50);
+        }
+        else
+        {
+            pressScreenTimeParameterTemp = pressScreenTimeParameter;
+            qDebug() << 0;
+        }
+
+        pressScreenTime = (int)(distance*pressScreenTimeParameterTemp);
+
         blockCenterPos.x = x;
         blockCenterPos.y = y;
     }

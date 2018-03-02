@@ -42,7 +42,8 @@ private:
     void getBlockCenterPos(const cv::Point &topCorner, const cv::Point &leftConer, const cv::Point &rightCorner, cv::Point &centerPoint);
 
     double distance = -1.0;
-    double pressScreenTimeParameter = 1.45;
+    double pressScreenTimeParameter = 1.447;
+    double pressScreenTimeParameterTemp = -1.0;
     int pressScreenTime = 0;
 
     int inputImageWidth;

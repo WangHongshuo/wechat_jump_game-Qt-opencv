@@ -32,6 +32,11 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 ![](https://github.com/WangHongshuo/Readme_Images_Repository/blob/master/wechat_jump_game-Qt-opencv/readme.png)      
 ![](https://github.com/WangHongshuo/Readme_Images_Repository/blob/master/wechat_jump_game-Qt-opencv/readme.gif)    
 ## Change Log: ##
+- 2018.03.02:
+
+Added cheat mode and added a flexible parameter to fix the jump parameter.
+
+添加作弊模式躲避作弊检测，添加修正参数去修正跳跃参数。 
 
 - 2018.03.01:
 
