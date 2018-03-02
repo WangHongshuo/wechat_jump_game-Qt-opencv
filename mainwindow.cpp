@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     adbFilePath = QCoreApplication::applicationDirPath() + "\\adb\\adb";
     controller.initializeAdbService(adbFilePath);
+    controller.setCheatMode(true);
 }
 
 MainWindow::~MainWindow()
@@ -146,11 +147,17 @@ void MainWindow::on_pushButtonTest_clicked()
                                                     "F:/1/ ",
                                                     tr("Image File(*.bmp *.jpg *.png"));
     if(filePath.isEmpty() | filePath.isNull())
+    {
         qDebug() << "filePath error!";
+        return;
+    }
     else
         qImageScreenShot.load(filePath);
     if(qImageScreenShot.isNull())
+    {
         qDebug() << "image load fail!";
+        return;
+    }
     else
     {
         matScreenShot = QImage2Mat_with_data(qImageScreenShot);

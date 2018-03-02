@@ -6,7 +6,6 @@
 #include <QProcess>
 #include <QImage>
 #include <QTimer>
-#include "jumpjump.h"
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
@@ -27,6 +26,7 @@ public:
     void startAutoJumpLoop();
     void stopAutoJumpLoop();
     void getMatScreenshotImage();
+    void setCheatMode(bool flag);
     QImage getQImageScreenshotImage();
 
     bool isAdbServiceInitializatedFlag() const;
@@ -49,16 +49,20 @@ private:
 
     QTimer timerJumpInterval;
     int jumpInterval = 1000;
-    JumpJump imageProcesser;
+
     QProcess adbProcess;
     QProcess getScreenshotProcess;
     QProcess jumpProcess;
+
     QString adbFilePath;
     cv::Mat matScreenshot;
     QImage qImageScreenshot;
+    QString cmd;
+
     bool isAdbPathValid = false;
     bool isAdbServiceInitializated = false;
     bool isDetectedDevice = false;
+    bool isCheatMode = false;
 };
 
 #endif // JUMPCONTROLLER_H

@@ -6,6 +6,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <QTime>
+#include <QtGlobal>
 
 JumpController::JumpController()
 {
@@ -87,10 +88,15 @@ void JumpController::getMatScreenshotImage()
     if(isAdbServiceInitializated && isDetectedDevice)
     {
         emit sendJumpControllerMessage(QString("Getting Screenshot..."));
-        QString cmd = adbFilePath + " shell screencap -p";
+        cmd = adbFilePath + " shell screencap -p";
         // it takes too much time
         getScreenshotProcess.start(cmd);
     }
+}
+
+void JumpController::setCheatMode(bool flag)
+{
+    isCheatMode = flag;
 }
 
 bool JumpController::isAdbServiceInitializatedFlag() const
@@ -148,8 +154,19 @@ void JumpController::jumpAction(int pressTime)
 {
     if(pressTime > 0)
     {
-        QString cmd = adbFilePath + " shell input swipe 200 200 200 200 " +
+        if(!isCheatMode)
+            cmd = adbFilePath + " shell input swipe 200 200 200 200 " +
                 QString::number(pressTime);
+        else
+        {
+            qsrand(QTime::currentTime().second());
+            cmd = adbFilePath + " shell input swipe "+
+                    QString::number(250+qrand()%10)+" "+
+                    QString::number(1600+qrand()%100)+" "+
+                    QString::number(250+qrand()%100)+" "+
+                    QString::number(1600+qrand()%10)+" "+
+                    QString::number(pressTime);
+        }
         qDebug() << cmd;
         jumpProcess.start(cmd);
         emit sendJumpControllerMessage(QString("Jumpping..."));
