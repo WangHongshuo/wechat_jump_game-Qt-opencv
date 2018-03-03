@@ -3,6 +3,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
+#include <fstream>
 
 class JumpJump
 {
@@ -40,10 +41,12 @@ private:
     void removeManEdge(cv::Mat &edgeImg, const cv::Mat &manImg, const cv::Point &manPos);
     void getBlockCornersPos(const cv::Mat &edgeImage, cv::Point &topCorner, cv::Point &leftCorner, cv::Point &rightCorner);
     void getBlockCenterPos(const cv::Point &topCorner, const cv::Point &leftConer, const cv::Point &rightCorner, cv::Point &centerPoint);
-
+    double getFixedPressScreenTimeParameterCorrections(double distance);
     double distance = -1.0;
     double pressScreenTimeParameter = 1.447;
-    double pressScreenTimeParameterTemp = -1.0;
+    double fixedPressScreenTimeParameter = -1.0;
+    cv::Point cvPointTemp;
+    double lineSlope = 0;
     int pressScreenTime = 0;
 
     int inputImageWidth;
@@ -68,6 +71,10 @@ private:
 
     int leftClickedPosX = -1;
     int leftClickedPosY = -1;
+
+    std::ofstream outputTxtFile;
+    bool isOutputTxtFileOpened = false;
+    int jumpCount = 1;
 };
 
 #endif // JUMPJUMP_H

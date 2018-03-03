@@ -5,15 +5,23 @@
 #include <opencv2/highgui.hpp>
 #include <QDebug>
 #include <iostream>
+#include <fstream>
 
 JumpJump::JumpJump()
 {
-
+    outputTxtFile.open("F:\\0Data.txt",std::ios_base::app);
+    if(outputTxtFile.is_open())
+        isOutputTxtFileOpened = true;
+    else
+    {
+        qDebug() << "output file open fail!";
+        isOutputTxtFileOpened = false;
+    }
 }
 
 JumpJump::~JumpJump()
 {
-
+    outputTxtFile.close();
 }
 
 void JumpJump::setInputImage(cv::Mat &inputMat)
@@ -152,27 +160,23 @@ void JumpJump::setLeftClickedPos(int x, int y)
         lastAreaX2 = x2;
         lastAreaY2 = y2;
         distance = std::sqrt(double(std::pow(x-manLocationX(),2)+std::pow(y-manLocationY(),2)));
-        // fixed press time when the block center pos is close to the man pos
-        if(distance < 500 && distance > 200)
-        {
-            pressScreenTimeParameterTemp = pressScreenTimeParameter+0.01*(6-(int(distance)/50-4));
-            qDebug() << 0.01*(6-(int(distance)/50-4));
-        }
-        else if(distance <= 200)
-        {
-            pressScreenTimeParameterTemp = pressScreenTimeParameter+0.02*(4-int(distance)/50);
-            qDebug() << 0.02*(4-int(distance)/50);
-        }
-        else
-        {
-            pressScreenTimeParameterTemp = pressScreenTimeParameter;
-            qDebug() << 0;
-        }
 
-        pressScreenTime = (int)(distance*pressScreenTimeParameterTemp);
+        // fixed press time when the block center pos is close to the man pos
+        fixedPressScreenTimeParameter = pressScreenTimeParameter+getFixedPressScreenTimeParameterCorrections(distance);
+        pressScreenTime = (int)(distance*fixedPressScreenTimeParameter);
 
         blockCenterPos.x = x;
         blockCenterPos.y = y;
+
+//        cvPointTemp = blockCenterPos-manPos;
+//        if(cvPointTemp.x != 0)
+//            lineSlope = double(cvPointTemp.y)/double(cvPointTemp.x);
+//        else
+//            lineSlope = 0;
+//        outputTxtFile << jumpCount << ": " <<getFixedPressScreenTimeParameterCorrections(distance) << "  "
+//                      << distance << "   " << fixedPressScreenTimeParameter << "  " << lineSlope << "\n";
+//        qDebug() << jumpCount;
+//        jumpCount++;
     }
 
 }
@@ -200,26 +204,51 @@ void JumpJump::mainTask()
 
 void JumpJump::getBinaryImage(const cv::Mat &src, cv::Mat &dst)
 {
-    if(src.channels() == 3)
-        cv::cvtColor(src,dst,CV_RGB2GRAY);
-    else
-        dst = src.clone();
+    cv::Mat HSV[3];
+    cv::cvtColor(src,dst,CV_RGB2HSV_FULL);
+    cv::split(dst,HSV);
+    uchar c;
+    int temp;
 
-    uchar temp;
-    int temp2;
-    for (int i = 0; i < dst.rows; i++)
+    for (int i = 0; i < src.rows; i++)
     {
-        temp = dst.ptr<uchar>(i)[0];
-        for (int j = 1; j < dst.cols; j++)
+        c = HSV[0].ptr<uchar>(i)[0];
+        for (int j = 1; j < src.cols; j++)
         {
-            temp2 = temp - dst.ptr<uchar>(i)[j];
-            if (temp2 >= -1 && temp2 <= 1)
-                dst.ptr<uchar>(i)[j] = 0;
+            temp = c - HSV[0].ptr<uchar>(i)[j];
+            if (temp >= -2 && temp <= 2)
+            {
+                HSV[0].ptr<uchar>(i)[j] = 0;
+            }
             else
-                dst.ptr<uchar>(i)[j] = 255;
+            {
+                HSV[0].ptr<uchar>(i)[j] = 255;
+            }
         }
-        dst.ptr<uchar>(i)[0] = 0;
+        HSV[0].ptr<uchar>(i)[0] = 0;
     }
+    dst = HSV[0];
+
+//    if(src.channels() == 3)
+//        cv::cvtColor(src,dst,CV_RGB2GRAY);
+//    else
+//        dst = src.clone();
+
+//    uchar temp;
+//    int temp2;
+//    for (int i = 0; i < dst.rows; i++)
+//    {
+//        temp = dst.ptr<uchar>(i)[0];
+//        for (int j = 1; j < dst.cols; j++)
+//        {
+//            temp2 = temp - dst.ptr<uchar>(i)[j];
+//            if (temp2 >= -1 && temp2 <= 1)
+//                dst.ptr<uchar>(i)[j] = 0;
+//            else
+//                dst.ptr<uchar>(i)[j] = 255;
+//        }
+//        dst.ptr<uchar>(i)[0] = 0;
+//    }
 }
 
 void JumpJump::getTemplatePos(cv::Mat &src, const cv::Mat &target, cv::Point &targetLocation, cv::Point &oriTargetLocation)
@@ -336,7 +365,7 @@ void JumpJump::getBlockCornersPos(const cv::Mat &edgeImage, cv::Point &topCorner
 void JumpJump::getBlockCenterPos(const cv::Point &topCorner, const cv::Point &leftCorner, const cv::Point &rightCorner, cv::Point &centerPoint)
 {
     centerPoint.x = topCorner.x;
-    if(leftCorner.y-rightCorner.y > 45 || rightCorner.y-leftCorner.y > 45)
+    if(leftCorner.y-rightCorner.y >= 35 || rightCorner.y-leftCorner.y >= 35)
         centerPoint.y = (int)(leftCorner.y+rightCorner.y)*0.5;
     else
         centerPoint.y = std::max(leftCorner.y,rightCorner.y);
@@ -351,6 +380,25 @@ void JumpJump::getBlockCenterPos(const cv::Point &topCorner, const cv::Point &le
 //    double delta = b*c-a*d;
 //    int y4 = (int)(c*e-a*f)/delta;
 //    centerPoint.x = (int)(x2+x3)*0.5;
-//    centerPoint.y = (int)(y1+y4)*0.5;
+    //    centerPoint.y = (int)(y1+y4)*0.5;
+}
+
+double JumpJump::getFixedPressScreenTimeParameterCorrections(double distance)
+{
+    double corrections;
+    if(distance < 500 && distance > 200)
+    {
+        corrections = 0.01*(6-(int(distance)/50-4));
+    }
+    else if(distance <= 200)
+    {
+        corrections = 0.02*(4-int(distance)/50);
+    }
+    else
+    {
+        corrections = 0;
+    }
+    qDebug() << corrections;
+    return corrections;
 }
 
