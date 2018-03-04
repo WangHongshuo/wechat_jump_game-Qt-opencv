@@ -10,7 +10,8 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 目前只完成了调系数和手动测距功能，距离和鼠标按下时间的关系可能没那么简单，和手机分辨率也有关系。有时间试下能不能自动化。
 
 ## Auto Jump Mode High Score: ##
-- 2018.02.17: 884 [Image](https://github.com/WangHongshuo/Readme_Images_Repository/blob/master/wechat_jump_game-Qt-opencv/HighScoreImage.png)
+- 2018.02.17: 1136 [Image](https://github.com/WangHongshuo/Readme_Images_Repository/blob/master/wechat_jump_game-Qt-opencv/HighScoreImage.png)
+- 2018.02.17: 884
 - 2018.02.12: 511 
 - 2018.02.08: 439 
 - 2018.02.07: 307 
@@ -32,6 +33,13 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 ![](https://github.com/WangHongshuo/Readme_Images_Repository/blob/master/wechat_jump_game-Qt-opencv/readme.png)      
 ![](https://github.com/WangHongshuo/Readme_Images_Repository/blob/master/wechat_jump_game-Qt-opencv/readme.gif)    
 ## Change Log: ##
+
+- 2018.03.03 dev branch:
+
+Updated the binaryzation algorithm in the JumpJump class (getBinaryImage), transformed image RGB color space into HSV color space to improve stability. Fixed some threshold parameters.  
+
+更新了二值化图像算法，将图像转为HSV具有较大的抗干扰性。修正了一些阈值参数。
+
 - 2018.03.02:
 
 Added cheat mode and added a flexible parameter to fix the jump parameter.
