@@ -9,7 +9,7 @@
 
 JumpJump::JumpJump()
 {
-    outputTxtFile.open("F:\\0Data.txt",std::ios_base::app);
+    outputTxtFile.open("F:\\Jump.log",std::ios_base::app);
     if(outputTxtFile.is_open())
         isOutputTxtFileOpened = true;
     else
@@ -168,15 +168,15 @@ void JumpJump::setLeftClickedPos(int x, int y)
         blockCenterPos.x = x;
         blockCenterPos.y = y;
 
-//        cvPointTemp = blockCenterPos-manPos;
-//        if(cvPointTemp.x != 0)
-//            lineSlope = double(cvPointTemp.y)/double(cvPointTemp.x);
-//        else
-//            lineSlope = 0;
-//        outputTxtFile << jumpCount << ": " <<getFixedPressScreenTimeParameterCorrections(distance) << "  "
-//                      << distance << "   " << fixedPressScreenTimeParameter << "  " << lineSlope << "\n";
-//        qDebug() << jumpCount;
-//        jumpCount++;
+        cvPointTemp = blockCenterPos-manPos;
+        if(cvPointTemp.x != 0)
+            lineSlope = double(cvPointTemp.y)/double(cvPointTemp.x);
+        else
+            lineSlope = 0;
+        outputTxtFile << jumpCount << ": " <<getFixedPressScreenTimeParameterCorrections(distance) << "  "
+                      << distance << "   " << fixedPressScreenTimeParameter << "\n";
+        qDebug() << jumpCount;
+        jumpCount++;
     }
 
 }
@@ -204,21 +204,31 @@ void JumpJump::mainTask()
 
 void JumpJump::getBinaryImage(const cv::Mat &src, cv::Mat &dst)
 {
+    // HSV
     cv::Mat HSV[3];
-    cv::cvtColor(src,dst,CV_RGB2HSV_FULL);
+    cv::cvtColor(src,dst,CV_RGB2HSV);
     cv::split(dst,HSV);
-    uchar c;
+    uchar c1,c2;
     int temp;
 
     for (int i = 0; i < src.rows; i++)
     {
-        c = HSV[0].ptr<uchar>(i)[0];
+        c1 = HSV[0].ptr<uchar>(i)[0];
+        c2 = HSV[1].ptr<uchar>(i)[0];
         for (int j = 1; j < src.cols; j++)
         {
-            temp = c - HSV[0].ptr<uchar>(i)[j];
-            if (temp >= -2 && temp <= 2)
+            temp = c1 - HSV[0].ptr<uchar>(i)[j];
+            if (temp >= -4 && temp <= 4)
             {
-                HSV[0].ptr<uchar>(i)[j] = 0;
+                temp = c2 - HSV[1].ptr<uchar>(i)[j];
+                if(temp >= -4 && temp <= 4)
+                {
+                    HSV[0].ptr<uchar>(i)[j] = 0;
+                }
+                else
+                {
+                    HSV[0].ptr<uchar>(i)[j] = 255;
+                }
             }
             else
             {
@@ -229,6 +239,7 @@ void JumpJump::getBinaryImage(const cv::Mat &src, cv::Mat &dst)
     }
     dst = HSV[0];
 
+    // RGB
 //    if(src.channels() == 3)
 //        cv::cvtColor(src,dst,CV_RGB2GRAY);
 //    else
@@ -386,13 +397,17 @@ void JumpJump::getBlockCenterPos(const cv::Point &topCorner, const cv::Point &le
 double JumpJump::getFixedPressScreenTimeParameterCorrections(double distance)
 {
     double corrections;
-    if(distance < 500 && distance > 200)
+    if(distance < 250)
     {
-        corrections = 0.01*(6-(int(distance)/50-4));
+        corrections = 0.025*(5-int(distance)/50);
     }
-    else if(distance <= 200)
+    else if(distance <= 500 && distance >= 250)
     {
-        corrections = 0.02*(4-int(distance)/50);
+        corrections = 0.005*(10-(int(distance)/50));
+    }
+    else if(distance >= 550)
+    {
+        corrections = -0.01*(int(distance)/50-10);
     }
     else
     {
