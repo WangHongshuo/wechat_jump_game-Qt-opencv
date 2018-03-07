@@ -19,6 +19,7 @@ public:
     void setInputImage(cv::Mat &inputMat);
     void setTemplateImage(cv::Mat &templateImg);
     void setPressScreenTimeParameter(double t);
+    void setEnableOutputLog(bool flag);
     void updateEdgeImage();
     void update();
     bool isLoadInputImage();
@@ -29,7 +30,7 @@ public:
     double jumpDistance() const;
     int getPressScreenTime() const;
     double getPressScreenTimeParameter() const;
-
+    bool loadInifile(std::string path);
 
     void setLeftClickedPos(int x,int y);
 
@@ -42,6 +43,9 @@ private:
     void getBlockCornersPos(const cv::Mat &edgeImage, cv::Point &topCorner, cv::Point &leftCorner, cv::Point &rightCorner);
     void getBlockCenterPos(const cv::Point &topCorner, const cv::Point &leftConer, const cv::Point &rightCorner, cv::Point &centerPoint);
     double getFixedPressScreenTimeParameterCorrections(double distance);
+    bool readCorrectionsFromIniFile(std::ifstream &reader);
+    template<typename A>
+    void copyArray(const A (&src), A (&dst), int from, int to);
     double distance = -1.0;
     double pressScreenTimeParameter = 1.447;
     double fixedPressScreenTimeParameter = -1.0;
@@ -68,6 +72,7 @@ private:
     bool isLoadImage = false;
     bool isLoadTemplateImage = false;
     bool isDrawPointAreaCopied = false;
+    bool isOutputLog = false;
 
     int leftClickedPosX = -1;
     int leftClickedPosY = -1;
@@ -75,6 +80,11 @@ private:
     std::ofstream outputTxtFile;
     bool isOutputTxtFileOpened = false;
     int jumpCount = 1;
+
+    std::ifstream iniLoader;
+    double corrections[20] = {0.0};
+    double correctionsBuffer[20] = {0.0};
+    bool isCorrectionsBufferLoaded = false;
 };
 
 #endif // JUMPJUMP_H

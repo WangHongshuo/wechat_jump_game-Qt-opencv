@@ -254,7 +254,7 @@
      <string>Test Save</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>380</x>
@@ -429,6 +429,19 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="pushButtonLoadIniFile">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>460</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load .ini</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

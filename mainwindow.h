@@ -37,6 +37,8 @@ private slots:
     void receiveMatScreenshotAndProcess(cv::Mat img);
     void receiveJumpControllerMessage(QString msg);
 
+    void on_pushButtonLoadIniFile_clicked();
+
 private:
     void showImage(QImage &src);
     void showImage(cv::Mat &src);

@@ -1,11 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <string>
 #include <QDebug>
 #include <QMessageBox>
 #include <QTimer>
 #include <QTime>
-#include <QBuffer>
-#include <QImageReader>
 #include "QImageMatConvert/mat_qimage_convert.h"
 #include "ImageWidget-Qt/ImageWidget.h"
 #include <opencv2/core.hpp>
@@ -57,6 +56,13 @@ MainWindow::MainWindow(QWidget *parent) :
     adbFilePath = QCoreApplication::applicationDirPath() + "\\adb\\adb";
     controller.initializeAdbService(adbFilePath);
     controller.setCheatMode(true);
+    if(!jumpGame.loadInifile((QCoreApplication::applicationDirPath()+"/default.ini").toStdString()))
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr("default.ini load fail."));
+        msgBox.exec();
+    }
+    jumpGame.setEnableOutputLog(false);
 }
 
 MainWindow::~MainWindow()
@@ -278,4 +284,25 @@ void MainWindow::receiveMatScreenshotAndProcess(cv::Mat img)
 void MainWindow::receiveJumpControllerMessage(QString msg)
 {
     ui->statusBar->showMessage(msg);
+}
+
+void MainWindow::on_pushButtonLoadIniFile_clicked()
+{
+    QString filePath = QFileDialog::getOpenFileName(this,tr("open file"),
+                                                    QApplication::applicationDirPath(),
+                                                    tr("ini File (*.ini)"));
+    if(!filePath.isNull() && !filePath.isEmpty())
+    {
+        std::string strFilePath = filePath.toStdString();
+        if(!jumpGame.loadInifile(strFilePath))
+            ui->statusBar->showMessage("ini file load error and parameters will not be changed!");
+        else
+            ui->statusBar->showMessage("ini file load successful!");
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr(".ini file load failed!"));
+        msgBox.exec();
+    }
 }

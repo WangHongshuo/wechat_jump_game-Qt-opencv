@@ -22,6 +22,7 @@ JumpJump::JumpJump()
 JumpJump::~JumpJump()
 {
     outputTxtFile.close();
+    iniLoader.close();
 }
 
 void JumpJump::setInputImage(cv::Mat &inputMat)
@@ -55,6 +56,11 @@ void JumpJump::setTemplateImage(cv::Mat &templateImg)
 void JumpJump::setPressScreenTimeParameter(double t)
 {
     pressScreenTimeParameter = t;
+}
+
+void JumpJump::setEnableOutputLog(bool flag)
+{
+    isOutputLog = flag;
 }
 
 
@@ -107,6 +113,23 @@ int JumpJump::getPressScreenTime() const
 double JumpJump::getPressScreenTimeParameter() const
 {
     return pressScreenTimeParameter;
+}
+
+bool JumpJump::loadInifile(std::string path)
+{
+    if(iniLoader.is_open())
+        iniLoader.close();
+    iniLoader.open(path,std::ios_base::in);
+    iniLoader.seekg(0,std::ios_base::beg);
+    if(iniLoader.is_open())
+    {
+        return readCorrectionsFromIniFile(iniLoader);
+    }
+    else
+    {
+        qDebug() << "iniLoad is not open.";
+        return false;
+    }
 }
 
 cv::Point JumpJump::manLocationPoint()
@@ -173,8 +196,9 @@ void JumpJump::setLeftClickedPos(int x, int y)
             lineSlope = double(cvPointTemp.y)/double(cvPointTemp.x);
         else
             lineSlope = 0;
-        outputTxtFile << jumpCount << ": " <<getFixedPressScreenTimeParameterCorrections(distance) << "  "
-                      << distance << "   " << fixedPressScreenTimeParameter << "\n";
+        if(isOutputLog)
+            outputTxtFile << jumpCount << ": " <<getFixedPressScreenTimeParameterCorrections(distance) << "  "
+                          << distance << "   " << fixedPressScreenTimeParameter << "\n";
         qDebug() << jumpCount;
         jumpCount++;
     }
@@ -396,24 +420,32 @@ void JumpJump::getBlockCenterPos(const cv::Point &topCorner, const cv::Point &le
 
 double JumpJump::getFixedPressScreenTimeParameterCorrections(double distance)
 {
-    double corrections;
-    if(distance < 250)
-    {
-        corrections = 0.025*(5-int(distance)/50);
-    }
-    else if(distance <= 500 && distance >= 250)
-    {
-        corrections = 0.005*(10-(int(distance)/50));
-    }
-    else if(distance >= 550)
-    {
-        corrections = -0.01*(int(distance)/50-10);
-    }
-    else
-    {
-        corrections = 0;
-    }
-    qDebug() << corrections;
-    return corrections;
+    if(isCorrectionsBufferLoaded)
+        copyArray(correctionsBuffer,corrections,0,19);
+    int correctionsIndex = distance / 50;
+    qDebug() << corrections[correctionsIndex];
+    return corrections[correctionsIndex];
 }
 
+bool JumpJump::readCorrectionsFromIniFile(std::ifstream &reader)
+{
+    for(int i=0;i<10;i++)
+    {
+        if(!reader.eof())
+            reader >> correctionsBuffer[i];
+        else
+        {
+            isCorrectionsBufferLoaded = false;
+            return false;
+        }
+    }
+    isCorrectionsBufferLoaded = true;
+    return true;
+}
+
+template<typename A>
+void JumpJump::copyArray(const A (&src), A (&dst), int from, int to)
+{
+    for(int i=from;i<=to;i++)
+        dst[i] = src[i];
+}
