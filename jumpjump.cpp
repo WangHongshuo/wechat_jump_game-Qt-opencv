@@ -132,6 +132,16 @@ bool JumpJump::loadInifile(std::string path)
     }
 }
 
+void JumpJump::fixCorrectionsBuffer(double delta, int index)
+{
+    correctionsBuffer[index] += delta;
+}
+
+void JumpJump::setCorrectionsBuffer(double data, int index)
+{
+    correctionsBuffer[index] = data;
+}
+
 cv::Point JumpJump::manLocationPoint()
 {
     return manPos;

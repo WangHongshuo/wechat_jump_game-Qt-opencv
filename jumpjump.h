@@ -31,7 +31,8 @@ public:
     int getPressScreenTime() const;
     double getPressScreenTimeParameter() const;
     bool loadInifile(std::string path);
-
+    void fixCorrectionsBuffer(double delta, int index);
+    void setCorrectionsBuffer(double data,int index);
     void setLeftClickedPos(int x,int y);
 
 private:

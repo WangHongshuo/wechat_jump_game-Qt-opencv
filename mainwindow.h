@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "fixparameterdialog.h"
 #include "jumpjump.h"
 #include "jumpcontroller.h"
 #include <QTimer>
@@ -19,6 +20,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void receiveAdjustedParameterValue(double delta,int index);
 private slots:
     void on_pushButtonJump_clicked();
     void on_pushButtonFindAdb_clicked();
@@ -38,6 +41,9 @@ private slots:
     void receiveJumpControllerMessage(QString msg);
 
     void on_pushButtonLoadIniFile_clicked();
+
+    void on_pushButtonFixPatameters_clicked();
+    void setPushButtonFixParametersEnable();
 
 private:
     void showImage(QImage &src);

@@ -27,9 +27,9 @@
    <widget class="QLineEdit" name="lineEditDistanceParameter">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>510</y>
-      <width>113</width>
+      <x>492</x>
+      <y>490</y>
+      <width>81</width>
       <height>20</height>
      </rect>
     </property>
@@ -231,14 +231,14 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>510</y>
-      <width>71</width>
+      <x>390</x>
+      <y>490</y>
+      <width>101</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Parameter:</string>
+     <string>Basic Parameter:</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButtonTestSaveInputImage">
@@ -441,6 +441,19 @@
     </property>
     <property name="text">
      <string>Load .ini</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonFixPatameters">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>520</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Fix Parameters</string>
     </property>
    </widget>
   </widget>

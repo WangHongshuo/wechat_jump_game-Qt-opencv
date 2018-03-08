@@ -30,7 +30,8 @@ SOURCES += \
     QImageMatConvert/mat_qimage_convert.cpp \
     ImageWidget-Qt/ImageWidget.cpp \
     ImageWidget-Qt/selectrect.cpp \
-    jumpcontroller.cpp
+    jumpcontroller.cpp \
+    fixparameterdialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -38,10 +39,12 @@ HEADERS += \
     QImageMatConvert/mat_qimage_convert.h \
     ImageWidget-Qt/ImageWidget.h \
     ImageWidget-Qt/selectrect.h \
-    jumpcontroller.h
+    jumpcontroller.h \
+    fixparameterdialog.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    fixparameterdialog.ui
 
 # MinGW32
 

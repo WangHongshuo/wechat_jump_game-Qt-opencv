@@ -70,6 +70,11 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::receiveAdjustedParameterValue(double delta, int index)
+{
+    jumpGame.fixCorrectionsBuffer(delta,index);
+}
+
 void MainWindow::showImage(QImage &src)
 {
     if(!src.isNull())
@@ -305,4 +310,22 @@ void MainWindow::on_pushButtonLoadIniFile_clicked()
         msgBox.setText(tr(".ini file load failed!"));
         msgBox.exec();
     }
+}
+
+void MainWindow::on_pushButtonFixPatameters_clicked()
+{
+    ui->pushButtonFixPatameters->setEnabled(false);
+    FixParameterDialog *a = new FixParameterDialog(this);
+    connect(a,SIGNAL(sendAdjustedCorrectionValue(double,int)),
+            this,SLOT(receiveAdjustedParameterValue(double,int)),
+            Qt::UniqueConnection);
+    connect(a,SIGNAL(destroyed(QObject*)),
+            this,SLOT(setPushButtonFixParametersEnable()),
+            Qt::UniqueConnection);
+            a->show();
+}
+
+void MainWindow::setPushButtonFixParametersEnable()
+{
+    ui->pushButtonFixPatameters->setEnabled(true);
 }
