@@ -25,6 +25,7 @@ private slots:
 
 private:
     Ui::FixParameterDialog *ui;
+    void initializedTableViewParameterInfo();
 
     double steps[3] = {0.001,0.01,0.1};
     double step = 0.001;
