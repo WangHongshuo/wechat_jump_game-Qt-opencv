@@ -279,6 +279,7 @@ void MainWindow::receiveMatScreenshotAndProcess(cv::Mat img)
     if(matScreenShot.data)
     {
         jumpGame.setInputImage(matScreenShot);
+        emit sendCurrentJumpLog(jumpGame.getCurrentJumpLog());
         showImage(jumpGame.outputImage);
         updateLables();
         if(isAutoJumpModeSelected &&isAutoJumpActived)

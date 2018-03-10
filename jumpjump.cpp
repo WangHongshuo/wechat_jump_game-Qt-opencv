@@ -195,7 +195,9 @@ void JumpJump::setLeftClickedPos(int x, int y)
         distance = std::sqrt(double(std::pow(x-manLocationX(),2)+std::pow(y-manLocationY(),2)));
 
         // fixed press time when the block center pos is close to the man pos
-        fixedPressScreenTimeParameter = pressScreenTimeParameter+getFixedPressScreenTimeParameterCorrections(distance);
+        correction = getFixedPressScreenTimeParameterCorrection(distance);
+        correctionIndex = distance / distanceStep;
+        fixedPressScreenTimeParameter = pressScreenTimeParameter+correction;
         pressScreenTime = (int)(distance*fixedPressScreenTimeParameter);
 
         blockCenterPos.x = x;
@@ -207,12 +209,18 @@ void JumpJump::setLeftClickedPos(int x, int y)
         else
             lineSlope = 0;
         if(isOutputLog)
-            outputTxtFile << jumpCount << ": " <<getFixedPressScreenTimeParameterCorrections(distance) << "  "
+            outputTxtFile << jumpCount << ": " <<getFixedPressScreenTimeParameterCorrection(distance) << "  "
                           << distance << "   " << fixedPressScreenTimeParameter << "\n";
         qDebug() << jumpCount;
         jumpCount++;
+        updateCurrentJumpLog(currentJumpLog,correctionIndex,distance,correction);
     }
 
+}
+
+double *JumpJump::getCurrentJumpLog()
+{
+    return currentJumpLog;
 }
 
 void JumpJump::mainTask()
@@ -428,11 +436,11 @@ void JumpJump::getBlockCenterPos(const cv::Point &topCorner, const cv::Point &le
     //    centerPoint.y = (int)(y1+y4)*0.5;
 }
 
-double JumpJump::getFixedPressScreenTimeParameterCorrections(double distance)
+double JumpJump::getFixedPressScreenTimeParameterCorrection(double distance)
 {
     if(isCorrectionsBufferLoaded)
         copyArray(correctionsBuffer,corrections,0,19);
-    int correctionsIndex = distance / 50;
+    int correctionsIndex = distance / distanceStep;
     qDebug() << corrections[correctionsIndex];
     return corrections[correctionsIndex];
 }
@@ -451,6 +459,16 @@ bool JumpJump::readCorrectionsFromIniFile(std::ifstream &reader)
     }
     isCorrectionsBufferLoaded = true;
     return true;
+}
+
+void JumpJump::updateCurrentJumpLog(double (&log)[6], int index, double distance, double correction)
+{
+    log[0] = log[3];
+    log[1] = log[4];
+    log[2] = log[5];
+    log[3] = double(index);
+    log[4] = distance;
+    log[5] = correction;
 }
 
 template<typename A>

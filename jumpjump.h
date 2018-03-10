@@ -32,8 +32,9 @@ public:
     double getPressScreenTimeParameter() const;
     bool loadInifile(std::string path);
     void fixCorrectionsBuffer(double delta, int index);
-    void setCorrectionsBuffer(double data,int index);
+    void setCorrectionsBuffer(double data, int index);
     void setLeftClickedPos(int x,int y);
+    double* getCurrentJumpLog();
 
 private:
     void mainTask();
@@ -43,8 +44,9 @@ private:
     void removeManEdge(cv::Mat &edgeImg, const cv::Mat &manImg, const cv::Point &manPos);
     void getBlockCornersPos(const cv::Mat &edgeImage, cv::Point &topCorner, cv::Point &leftCorner, cv::Point &rightCorner);
     void getBlockCenterPos(const cv::Point &topCorner, const cv::Point &leftConer, const cv::Point &rightCorner, cv::Point &centerPoint);
-    double getFixedPressScreenTimeParameterCorrections(double distance);
+    double getFixedPressScreenTimeParameterCorrection(double distance);
     bool readCorrectionsFromIniFile(std::ifstream &reader);
+    void updateCurrentJumpLog(double (&log)[6], int index, double distance, double correction);
     template<typename A>
     void copyArray(const A (&src), A (&dst), int from, int to);
     double distance = -1.0;
@@ -83,9 +85,14 @@ private:
     int jumpCount = 1;
 
     std::ifstream iniLoader;
+    int distanceStep = 50;
+    int correctionIndex = -1;
+    double correction = -1;
     double corrections[20] = {0.0};
     double correctionsBuffer[20] = {0.0};
     bool isCorrectionsBufferLoaded = false;
+
+    double currentJumpLog[6] = {-1,-1,-1,-1,-1,-1};
 };
 
 #endif // JUMPJUMP_H

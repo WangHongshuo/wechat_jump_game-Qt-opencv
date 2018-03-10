@@ -20,6 +20,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+    void sendCurrentJumpLog(double *log);
 public slots:
     void receiveAdjustedParameterValue(double delta,int index);
 private slots:
