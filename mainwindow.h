@@ -51,6 +51,8 @@ private:
     void showImage(QImage &src);
     void showImage(cv::Mat &src);
     void updateLables();
+    void showAdbServiceInitFailedMsgBox();
+    void showNoDeviceDetectedMsgBox();
 
     Ui::MainWindow *ui;
     QImage qImageScreenShot;

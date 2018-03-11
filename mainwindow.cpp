@@ -108,16 +108,33 @@ void MainWindow::updateLables()
     ui->labelParameter->setText(ui->lineEditDistanceParameter->text());
 }
 
+void MainWindow::showAdbServiceInitFailedMsgBox()
+{
+    QMessageBox msgBox;
+    msgBox.setText(tr("Adb service initialized failed!"));
+    msgBox.exec();
+}
+
+void MainWindow::showNoDeviceDetectedMsgBox()
+{
+    QMessageBox msgBox;
+    msgBox.setText(tr("Can't connect to device!"));
+    msgBox.exec();
+}
+
 void MainWindow::on_pushButtonJump_clicked()
 {
     if(!controller.isAdbServiceInitializatedFlag())
     {
-        QMessageBox msgBox;
-        msgBox.setText(tr("Can't find adb.exe!"));
-        msgBox.exec();
+        showAdbServiceInitFailedMsgBox();
+    }
+    else if(!controller.isDetectedDeviceFlag())
+    {
+        showNoDeviceDetectedMsgBox();
     }
     else
     {
+        emit sendCurrentJumpLog(jumpGame.getCurrentJumpLog());
         controller.jumpAction(jumpGame.getPressScreenTime());
     }
 }
@@ -135,11 +152,13 @@ void MainWindow::on_pushButtonFindAdb_clicked()
 
 void MainWindow::on_pushButtonGetScreenshotImage_clicked()
 {
-    if(!controller.isDetectedDeviceFlag())
+    if(!controller.isAdbServiceInitializatedFlag())
     {
-        QMessageBox msgBox;
-        msgBox.setText(tr("Adb initialization failed!"));
-        msgBox.exec();
+        showAdbServiceInitFailedMsgBox();
+    }
+    else if(!controller.isDetectedDeviceFlag())
+    {
+        showNoDeviceDetectedMsgBox();
     }
     else
     {
@@ -279,11 +298,14 @@ void MainWindow::receiveMatScreenshotAndProcess(cv::Mat img)
     if(matScreenShot.data)
     {
         jumpGame.setInputImage(matScreenShot);
-        emit sendCurrentJumpLog(jumpGame.getCurrentJumpLog());
+
         showImage(jumpGame.outputImage);
         updateLables();
         if(isAutoJumpModeSelected &&isAutoJumpActived)
+        {
+            emit sendCurrentJumpLog(jumpGame.getCurrentJumpLog());
             controller.jumpAction(jumpGame.getPressScreenTime());
+        }
     }
 }
 
@@ -322,6 +344,9 @@ void MainWindow::on_pushButtonFixPatameters_clicked()
             Qt::UniqueConnection);
     connect(a,SIGNAL(destroyed(QObject*)),
             this,SLOT(setPushButtonFixParametersEnable()),
+            Qt::UniqueConnection);
+    connect(this,SIGNAL(sendCurrentJumpLog(double*)),
+            a,SLOT(receiveCurrentJumpLog(double*)),
             Qt::UniqueConnection);
             a->show();
 }

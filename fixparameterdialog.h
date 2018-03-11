@@ -2,6 +2,7 @@
 #define FIXPARAMETERDIALOG_H
 
 #include <QDialog>
+#include <QStandardItemModel>
 
 namespace Ui {
 class FixParameterDialog;
@@ -16,6 +17,8 @@ public:
     ~FixParameterDialog();
 signals:
     void sendAdjustedCorrectionValue(double delta,int index);
+public slots:
+    void receiveCurrentJumpLog(double *log);
 private slots:
     void on_comboBoxStep_currentIndexChanged(int index);
 
@@ -24,9 +27,11 @@ private slots:
     void on_pushButtonDec_clicked();
 
 private:
+    int lastIndex = -1;
+    int nextIndex = -1;
     Ui::FixParameterDialog *ui;
     void initializedTableViewParameterInfo();
-
+    QStandardItemModel *model = new QStandardItemModel();
     double steps[3] = {0.001,0.01,0.1};
     double step = 0.001;
 };
