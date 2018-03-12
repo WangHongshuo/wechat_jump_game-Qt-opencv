@@ -26,6 +26,8 @@ private slots:
 
     void on_pushButtonDec_clicked();
 
+    void on_pushButtonSaveAsIni_clicked();
+
 private:
     int lastIndex = -1;
     int nextIndex = -1;

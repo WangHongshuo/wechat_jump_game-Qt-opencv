@@ -11,6 +11,9 @@ FixParameterDialog::FixParameterDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setAttribute(Qt::WA_DeleteOnClose);
     initializedTableViewParameterInfo();
+    QPalette palette;
+    palette.setColor(QPalette::Text,Qt::red);
+    ui->lineEditAdjustInfo->setPalette(palette);
 }
 
 FixParameterDialog::~FixParameterDialog()
@@ -44,11 +47,25 @@ void FixParameterDialog::on_comboBoxStep_currentIndexChanged(int index)
 
 void FixParameterDialog::on_pushButtonInc_clicked()
 {
+    if(lastIndex > 0)
+        ui->lineEditAdjustInfo->setText("Adjusted correction "+
+                                         QString::number(lastIndex)+
+                                         "        " +QString::number(step));
+    else
+        ui->lineEditAdjustInfo->setText("Index " + QString::number(lastIndex)+
+                                        " is invalid!");
     emit sendAdjustedCorrectionValue(step,lastIndex);
 }
 
 void FixParameterDialog::on_pushButtonDec_clicked()
 {
+    if(lastIndex > 0)
+        ui->lineEditAdjustInfo->setText("Adjusted correction "+
+                                         QString::number(lastIndex)+
+                                         "        " +QString::number(-step));
+    else
+        ui->lineEditAdjustInfo->setText("Index " + QString::number(lastIndex)+
+                                        " is invalid!");
     emit sendAdjustedCorrectionValue(-step,lastIndex);
 }
 
@@ -68,4 +85,9 @@ void FixParameterDialog::initializedTableViewParameterInfo()
     ui->tableViewParameterInfo->setModel(model);
     for(int i=0;i<3;i++)
         ui->tableViewParameterInfo->setColumnWidth(i,90);
+}
+
+void FixParameterDialog::on_pushButtonSaveAsIni_clicked()
+{
+
 }
