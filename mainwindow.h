@@ -41,6 +41,7 @@ private slots:
     void receiveWidgetShowImageClickedPosInImage(int x,int y);
     void receiveMatScreenshotAndProcess(cv::Mat img);
     void receiveJumpControllerMessage(QString msg);
+    void receiveSaveCorrectionsAction(QString path);
 
     void on_pushButtonLoadIniFile_clicked();
 

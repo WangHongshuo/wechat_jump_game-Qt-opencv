@@ -4,6 +4,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <fstream>
+#include <string>
 
 class JumpJump
 {
@@ -35,6 +36,7 @@ public:
     void setCorrectionsBuffer(double data, int index);
     void setLeftClickedPos(int x,int y);
     double* getCurrentJumpLog();
+    void saveCorrectionInFile(std::string path);
 
 private:
     void mainTask();

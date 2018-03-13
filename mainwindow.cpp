@@ -279,7 +279,7 @@ void MainWindow::on_pushButtonSwitchAutoJump_clicked()
 void MainWindow::on_pushButtonTestSaveInputImage_clicked()
 {
     QImage temp = Mat2QImage_with_data(jumpGame.returnInputImage());
-    QString filename = QFileDialog::getSaveFileName(this, tr("Open File"),
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"),
                                                     QCoreApplication::applicationDirPath(),
                                                     tr("Images (*.png *.xpm *.jpg *.tiff *.bmp)"));
     if(!filename.isEmpty() || !filename.isNull())
@@ -312,6 +312,11 @@ void MainWindow::receiveMatScreenshotAndProcess(cv::Mat img)
 void MainWindow::receiveJumpControllerMessage(QString msg)
 {
     ui->statusBar->showMessage(msg);
+}
+
+void MainWindow::receiveSaveCorrectionsAction(QString path)
+{
+
 }
 
 void MainWindow::on_pushButtonLoadIniFile_clicked()

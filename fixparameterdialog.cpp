@@ -2,6 +2,7 @@
 #include "ui_fixparameterdialog.h"
 #include <QStandardItemModel>
 #include <QDebug>
+#include <QFileDialog>
 #include <QPoint>
 
 FixParameterDialog::FixParameterDialog(QWidget *parent) :
@@ -89,5 +90,9 @@ void FixParameterDialog::initializedTableViewParameterInfo()
 
 void FixParameterDialog::on_pushButtonSaveAsIni_clicked()
 {
-
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"),
+                                                    QCoreApplication::applicationDirPath(),
+                                                    tr("INI (*.ini)"));
+    if(!filename.isEmpty() && !filename.isNull())
+        emit sendSaveCorrectionsAction(filename);
 }

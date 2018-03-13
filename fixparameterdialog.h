@@ -17,6 +17,7 @@ public:
     ~FixParameterDialog();
 signals:
     void sendAdjustedCorrectionValue(double delta,int index);
+    void sendSaveCorrectionsAction(QString path);
 public slots:
     void receiveCurrentJumpLog(double *log);
 private slots:
