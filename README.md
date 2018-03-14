@@ -28,11 +28,25 @@ Now I finished basic funciton such as fix parameters and manual distance measure
 2. 连接电脑，打开程序并确定Adb状态为Find: XXXX(设备名称）。     
 3. 打开游戏界面，手动Get Screenshot（快捷键G）和在图上标点，调整弹跳系数，点击Jump(快捷键J)。      
 4. 稳定后再手动获取截图标点弹跳。      
+
+## How to adjust correction parameter: ##
+
+- Click Fix Parameter and adjust the current correction parameter when get the next jump image. 
+- (ATTATION: The screen pressing time = distanct * (basic parameter + correction parameter))
+
+- 打开 Fix Parameters ，当完成该次跳跃后获取到下一次跳跃的图像后，可调整该次的修正跳跃参数。
+- （注：按压屏幕时间 = 距离*（基础参数+修正参数））
                 
 ## Screenshot: ##
 ![](https://github.com/WangHongshuo/Readme_Images_Repository/blob/master/wechat_jump_game-Qt-opencv/readme.png)      
 ![](https://github.com/WangHongshuo/Readme_Images_Repository/blob/master/wechat_jump_game-Qt-opencv/readme.gif)    
 ## Change Log: ##
+
+- 2018.03.14:
+
+Merged dev branch to master branch, finished all function I want, added adjust the correction parameters and save the correction parameters function.
+
+合并dev分支到master，完成了所有我想要的功能，加入了调整修正参数和保存修正参数的功能。
 
 - 2018.03.03 dev branch:
 

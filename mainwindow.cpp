@@ -316,7 +316,7 @@ void MainWindow::receiveJumpControllerMessage(QString msg)
 
 void MainWindow::receiveSaveCorrectionsAction(QString path)
 {
-
+    jumpGame.saveCorrectionInFile(path.toStdString());
 }
 
 void MainWindow::on_pushButtonLoadIniFile_clicked()
@@ -352,6 +352,9 @@ void MainWindow::on_pushButtonFixPatameters_clicked()
             Qt::UniqueConnection);
     connect(this,SIGNAL(sendCurrentJumpLog(double*)),
             a,SLOT(receiveCurrentJumpLog(double*)),
+            Qt::UniqueConnection);
+    connect(a,SIGNAL(sendSaveCorrectionsAction(QString)),
+            this,SLOT(receiveSaveCorrectionsAction(QString)),
             Qt::UniqueConnection);
             a->show();
 }

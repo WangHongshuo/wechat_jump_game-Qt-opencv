@@ -25,6 +25,9 @@
    <property name="text">
     <string>Inc</string>
    </property>
+   <property name="shortcut">
+    <string>Up</string>
+   </property>
   </widget>
   <widget class="QPushButton" name="pushButtonDec">
    <property name="geometry">
@@ -37,6 +40,9 @@
    </property>
    <property name="text">
     <string>Dec</string>
+   </property>
+   <property name="shortcut">
+    <string>Down</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">

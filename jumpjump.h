@@ -6,6 +6,8 @@
 #include <fstream>
 #include <string>
 
+#define CORRECTIONS_COUNT 100
+
 class JumpJump
 {
 public:
@@ -87,11 +89,11 @@ private:
     int jumpCount = 1;
 
     std::ifstream iniLoader;
-    int distanceStep = 50;
+    int distanceStep;
     int correctionIndex = -1;
     double correction = -1;
-    double corrections[20] = {0.0};
-    double correctionsBuffer[20] = {0.0};
+    double corrections[CORRECTIONS_COUNT] = {0.0};
+    double correctionsBuffer[CORRECTIONS_COUNT] = {0.0};
     bool isCorrectionsBufferLoaded = false;
 
     double currentJumpLog[6] = {-1,-1,-1,-1,-1,-1};

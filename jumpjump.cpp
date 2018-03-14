@@ -17,6 +17,7 @@ JumpJump::JumpJump()
         qDebug() << "output file open fail!";
         isOutputTxtFileOpened = false;
     }
+    distanceStep = 1000/CORRECTIONS_COUNT;
 }
 
 JumpJump::~JumpJump()
@@ -221,6 +222,23 @@ void JumpJump::setLeftClickedPos(int x, int y)
 double *JumpJump::getCurrentJumpLog()
 {
     return currentJumpLog;
+}
+
+void JumpJump::saveCorrectionInFile(std::string path)
+{
+    std::ofstream saveAsIni(path.c_str(),std::ios_base::out);
+    int a = 0;
+    for(int i=0;i<CORRECTIONS_COUNT;i++)
+    {
+        saveAsIni << correctionsBuffer[i] << '\n';
+        a++;
+        if(a == 5)
+        {
+            saveAsIni << '\n';
+            a = 0;
+        }
+    }
+    saveAsIni.close();
 }
 
 void JumpJump::mainTask()
@@ -439,7 +457,7 @@ void JumpJump::getBlockCenterPos(const cv::Point &topCorner, const cv::Point &le
 double JumpJump::getFixedPressScreenTimeParameterCorrection(double distance)
 {
     if(isCorrectionsBufferLoaded)
-        copyArray(correctionsBuffer,corrections,0,19);
+        copyArray(correctionsBuffer,corrections,0,CORRECTIONS_COUNT-1);
     int correctionsIndex = distance / distanceStep;
     qDebug() << corrections[correctionsIndex];
     return corrections[correctionsIndex];
@@ -447,16 +465,20 @@ double JumpJump::getFixedPressScreenTimeParameterCorrection(double distance)
 
 bool JumpJump::readCorrectionsFromIniFile(std::ifstream &reader)
 {
-    for(int i=0;i<10;i++)
+    double temp[CORRECTIONS_COUNT];
+    for(int i=0;i<CORRECTIONS_COUNT;i++)
     {
         if(!reader.eof())
-            reader >> correctionsBuffer[i];
+        {
+            reader >> temp[i];
+        }
         else
         {
             isCorrectionsBufferLoaded = false;
             return false;
         }
     }
+    copyArray(temp,correctionsBuffer,0,CORRECTIONS_COUNT-1);
     isCorrectionsBufferLoaded = true;
     return true;
 }

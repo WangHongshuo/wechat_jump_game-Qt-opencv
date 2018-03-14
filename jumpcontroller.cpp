@@ -63,11 +63,18 @@ bool JumpController::restartAdbService()
 
 void JumpController::startAutoJumpLoop()
 {
-    QObject::connect(&jumpProcess,SIGNAL(finished(int)),
-                     this,SLOT(jumpActionFinishedLoopEvent()));
-    QObject::connect(&timerJumpInterval,SIGNAL(timeout()),
-                     this,SLOT(timerJumpIntervalTimeoutEvent()));
-    getMatScreenshotImage();
+    if(isAdbPathValid && isAdbServiceInitializated && isDetectedDevice)
+    {
+        QObject::connect(&jumpProcess,SIGNAL(finished(int)),
+                         this,SLOT(jumpActionFinishedLoopEvent()));
+        QObject::connect(&timerJumpInterval,SIGNAL(timeout()),
+                         this,SLOT(timerJumpIntervalTimeoutEvent()));
+        getMatScreenshotImage();
+    }
+    else
+    {
+        sendJumpControllerMessage(QString("Adb error or no device!"));
+    }
 }
 
 void JumpController::stopAutoJumpLoop()
