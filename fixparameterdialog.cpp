@@ -96,3 +96,13 @@ void FixParameterDialog::on_pushButtonSaveAsIni_clicked()
     if(!filename.isEmpty() && !filename.isNull())
         emit sendSaveCorrectionsAction(filename);
 }
+
+void FixParameterDialog::on_pushButtonGlobalInc_clicked()
+{
+    emit sendAdjustedGlobalJumpParameter(step);
+}
+
+void FixParameterDialog::on_pushButtonGlobalDec_clicked()
+{
+    emit sendAdjustedGlobalJumpParameter(-step);
+}

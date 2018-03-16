@@ -75,6 +75,12 @@ void MainWindow::receiveAdjustedParameterValue(double delta, int index)
     jumpGame.fixCorrectionsBuffer(delta,index);
 }
 
+void MainWindow::receiveAdjustedGlobalJumpParamter(double delta)
+{
+    jumpGame.setPressScreenTimeParameter(jumpGame.getPressScreenTimeParameter()+delta);
+    ui->lineEditDistanceParameter->setText(QString::number(jumpGame.getPressScreenTimeParameter()));
+}
+
 void MainWindow::showImage(QImage &src)
 {
     if(!src.isNull())
@@ -355,6 +361,9 @@ void MainWindow::on_pushButtonFixPatameters_clicked()
             Qt::UniqueConnection);
     connect(a,SIGNAL(sendSaveCorrectionsAction(QString)),
             this,SLOT(receiveSaveCorrectionsAction(QString)),
+            Qt::UniqueConnection);
+    connect(a,SIGNAL(sendAdjustedGlobalJumpParameter(double)),
+            this,SLOT(receiveAdjustedGlobalJumpParamter(double)),
             Qt::UniqueConnection);
             a->show();
 }

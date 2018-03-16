@@ -167,11 +167,14 @@ void JumpController::jumpAction(int pressTime)
         else
         {
             qsrand(QTime::currentTime().second());
+            int x,y;
+            x = 250+qrand()%100;
+            y = 1600+qrand()%100;
             cmd = adbFilePath + " shell input swipe "+
-                    QString::number(250+qrand()%10)+" "+
-                    QString::number(1600+qrand()%100)+" "+
-                    QString::number(250+qrand()%100)+" "+
-                    QString::number(1600+qrand()%10)+" "+
+                    QString::number(x)+" "+
+                    QString::number(y)+" "+
+                    QString::number(x)+" "+
+                    QString::number(y)+" "+
                     QString::number(pressTime);
         }
         qDebug() << cmd;

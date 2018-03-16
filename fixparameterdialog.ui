@@ -155,6 +155,38 @@
     <string>Save as ini</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButtonGlobalInc">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>220</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Global Inc</string>
+   </property>
+   <property name="shortcut">
+    <string>Right</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonGlobalDec">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>220</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Global Dec</string>
+   </property>
+   <property name="shortcut">
+    <string>Left</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

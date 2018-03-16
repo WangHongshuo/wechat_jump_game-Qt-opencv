@@ -24,6 +24,7 @@ signals:
     void sendCurrentJumpLog(double *log);
 public slots:
     void receiveAdjustedParameterValue(double delta,int index);
+    void receiveAdjustedGlobalJumpParamter(double delta);
 private slots:
     void on_pushButtonJump_clicked();
     void on_pushButtonFindAdb_clicked();

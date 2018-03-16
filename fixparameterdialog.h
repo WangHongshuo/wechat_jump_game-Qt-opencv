@@ -18,6 +18,7 @@ public:
 signals:
     void sendAdjustedCorrectionValue(double delta,int index);
     void sendSaveCorrectionsAction(QString path);
+    void sendAdjustedGlobalJumpParameter(double delta);
 public slots:
     void receiveCurrentJumpLog(double *log);
 private slots:
@@ -28,6 +29,10 @@ private slots:
     void on_pushButtonDec_clicked();
 
     void on_pushButtonSaveAsIni_clicked();
+
+    void on_pushButtonGlobalInc_clicked();
+
+    void on_pushButtonGlobalDec_clicked();
 
 private:
     int lastIndex = -1;
