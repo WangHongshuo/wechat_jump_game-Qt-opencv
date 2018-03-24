@@ -228,6 +228,7 @@ void JumpJump::saveCorrectionInFile(std::string path)
 {
     std::ofstream saveAsIni(path.c_str(),std::ios_base::out);
     int a = 0;
+    saveAsIni << pressScreenTimeParameter << '\n' << '\n';
     for(int i=0;i<CORRECTIONS_COUNT;i++)
     {
         saveAsIni << correctionsBuffer[i] << '\n';
@@ -466,11 +467,12 @@ double JumpJump::getFixedPressScreenTimeParameterCorrection(double distance)
 bool JumpJump::readCorrectionsFromIniFile(std::ifstream &reader)
 {
     double temp[CORRECTIONS_COUNT];
-    for(int i=0;i<CORRECTIONS_COUNT;i++)
+    reader >> pressScreenTimeParameter;
+    for(int i=1;i<=CORRECTIONS_COUNT;i++)
     {
         if(!reader.eof())
         {
-            reader >> temp[i];
+            reader >> temp[i-1];
         }
         else
         {

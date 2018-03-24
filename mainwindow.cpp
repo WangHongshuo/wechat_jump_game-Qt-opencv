@@ -62,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
         msgBox.setText(tr("default.ini load fail."));
         msgBox.exec();
     }
+    ui->lineEditDistanceParameter->setText(QString::number(jumpGame.getPressScreenTimeParameter()));
     jumpGame.setEnableOutputLog(false);
 }
 
@@ -336,7 +337,11 @@ void MainWindow::on_pushButtonLoadIniFile_clicked()
         if(!jumpGame.loadInifile(strFilePath))
             ui->statusBar->showMessage("ini file load error and parameters will not be changed!");
         else
+        {
             ui->statusBar->showMessage("ini file load successful!");
+            ui->labelParameter->setText(QString::number(jumpGame.getPressScreenTimeParameter()));
+            ui->lineEditDistanceParameter->setText(QString::number(jumpGame.getPressScreenTimeParameter()));
+        }
     }
     else
     {

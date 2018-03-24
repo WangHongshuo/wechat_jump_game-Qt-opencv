@@ -99,10 +99,12 @@ void FixParameterDialog::on_pushButtonSaveAsIni_clicked()
 
 void FixParameterDialog::on_pushButtonGlobalInc_clicked()
 {
+    ui->lineEditAdjustInfo->setText("Adjusted basic parameter "+QString::number(step));
     emit sendAdjustedGlobalJumpParameter(step);
 }
 
 void FixParameterDialog::on_pushButtonGlobalDec_clicked()
 {
+    ui->lineEditAdjustInfo->setText("Adjusted basic parameter "+QString::number(-step));
     emit sendAdjustedGlobalJumpParameter(-step);
 }
